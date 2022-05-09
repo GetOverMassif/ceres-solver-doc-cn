@@ -2652,28 +2652,21 @@ the covariance matrix <span class="math notranslate nohighlight"><mjx-container 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres12LossFunctionE">
 <span id="_CPPv3N5ceres12LossFunctionE"></span><span id="_CPPv2N5ceres12LossFunctionE"></span><span id="ceres::LossFunction"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LossFunction</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres12LossFunctionE" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>For least squares problems where the minimization may encounter
-input terms that contain outliers, that is, completely bogus
-measurements, it is important to use a loss function that reduces
-their influence.</p>
-<p>Consider a structure from motion problem. The unknowns are 3D
-points and camera parameters, and the measurements are image
-coordinates describing the expected reprojected position for a
-point in a camera. For example, we want to model the geometry of a
-street scene with fire hydrants and cars, observed by a moving
-camera with unknown parameters, and the only 3D points we care
-about are the pointy tippy-tops of the fire hydrants. Our magic
-image processing algorithm, which is responsible for producing the
-measurements that are input to Ceres, has found and matched all
-such tippy-tops in all image frames, except that in one of the
-frame it mistook a car’s headlight for a hydrant. If we didn’t do
-anything special the residual for the erroneous measurement will
-result in the entire solution getting pulled away from the optimum
-to reduce the large error that would otherwise be attributed to the
-wrong measurement.</p>
-<p>Using a robust loss function, the cost for large residuals is
-reduced. In the example above, this leads to outlier terms getting
-down-weighted so they do not overly influence the final solution.</p>
+<dd>
+<p>对于最小二乘问题，最小化可能遇到包含异常值输入项，即完全虚假的测量结果，这种
+  情况下使用减少其影响的损失函数很重要。</p>
+
+<p>考虑一个SfM（structure from motion）问题。未知量是3D点和摄像机参数，测
+  量值是描述相机中一个点的预期重投影位置的图像坐标。例如，我们想要对带有消防栓和
+  汽车的街景的几何形状进行建模，由带有未知参数的移动相机观察到，而我们唯一关心的
+  3D点是消防栓的尖顶端。我们神奇的图像处理算法，负责生成输入到Ceres的测量数据，
+  已经在所有图像帧中找到并匹配了所有这样的顶部，除了在其中一个帧中它错把汽车的前
+  灯当成了消防栓。如果我们不为此做些什么以减小误差，错误测量的残差将导致整个解决
+  方案偏离最优解，否则将归因于错误的测量。</p>
+
+<p>利用鲁棒损失函数，降低了大残差的代价。在上面的例子中，这使得异常项的权重得以
+  降低，这样它们就不会过度影响最终求解结果。</p>
+
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LossFunction</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
 <span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">Evaluate</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">out</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
@@ -3388,52 +3381,53 @@ are deprecated. They will be removed in the version 2.2.0. Please use
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres21LocalParameterizationE">
 <span id="_CPPv3N5ceres21LocalParameterizationE"></span><span id="_CPPv2N5ceres21LocalParameterizationE"></span><span id="ceres::LocalParameterization"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LocalParameterization</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>In many optimization problems, especially sensor fusion problems,
-one has to model quantities that live in spaces known as <a class="reference external" href="https://en.wikipedia.org/wiki/Manifold">Manifolds</a> , for example the
-rotation/orientation of a sensor that is represented by a
-<a class="reference external" href="https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation">Quaternion</a>.</p>
-<p>Manifolds are spaces, which locally look like Euclidean spaces. More
-precisely, at each point on the manifold there is a linear space
-that is tangent to the manifold. It has dimension equal to the
-intrinsic dimension of the manifold itself, which is less than or
-equal to the ambient space in which the manifold is embedded.</p>
-<p>For example, the tangent space to a point on a sphere in three
-dimensions is the two dimensional plane that is tangent to the
-sphere at that point. There are two reasons tangent spaces are
-interesting:</p>
+<dd>
+
+<p>在很多优化问题中，尤其是对于传感器融合问题，必须对存在于称为“
+<a class="reference external" href="https://en.wikipedia.org/wiki/Manifold">流形</a>
+空间”中的数量进行建模，例如用
+<a class="reference external" href="https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation">四元数</a>
+来表示传感器的旋转/朝向。</p>
+
+<p>流形是空间，局部看起来像欧几里得空间。更准确地说，流形上的每一点上都有一个与流形
+相切的线性空间。它的维数等于流形本身的内在维数，而内在维数小于或等于流形所嵌入的周围
+的环境空间。</p>
+
+<p>例如，三维球面上一点的切空间是在这一点与球相切的二维平面。切线空间有趣的原因有两
+个:</p>
+
 <ol class="arabic simple">
-<li><p>They are Euclidean spaces, so the usual vector space operations
-apply there, which makes numerical operations easy.</p></li>
-<li><p>Movement in the tangent space translate into movements along the
-manifold.  Movements perpendicular to the tangent space do not
-translate into movements on the manifold.</p></li>
+<li><p>它们是欧几里得空间，所以通常的向量空间运算在这里也适用，这使得数值运算很容易。
+</p></li>
+
+<li><p>切空间中的运动转化为流形上的运动，而垂直于切空间的运动不会转化为流形上的运动。
+</p></li>
 </ol>
-<p>Moving along the 2 dimensional plane tangent to the sphere and
-projecting back onto the sphere will move you away from the point
-you started from but moving along the normal at the same point and
-the projecting back onto the sphere brings you back to the point.</p>
-<p>Besides the mathematical niceness, modeling manifold valued
-quantities correctly and paying attention to their geometry has
-practical benefits too:</p>
+
+<p>沿与球面相切的二维平面移动，然后投影回球面，会使你远离原点；
+但在同一点沿法线移动，然后投影回球面，会使你回到原点。</p>
+
+<p>除了数学上的优点外，正确地对流形的值进行建模并关注它们的几何形状，也有实际的好处:
+</p>
+
 <ol class="arabic">
-<li><p>It naturally constrains the quantity to the manifold throughout
-the optimization, freeing the user from hacks like <em>quaternion
-normalization</em>.</p></li>
-<li><p>It reduces the dimension of the optimization problem to its
-<em>natural</em> size. For example, a quantity restricted to a line, is a
-one dimensional object regardless of the dimension of the ambient
-space in which this line lives.</p>
-<p>Working in the tangent space reduces not just the computational
-complexity of the optimization algorithm, but also improves its
-numerical behaviour of the algorithm.</p>
+<li><p>在整个优化的过程中，它自然地限制了流形的数量，将用户从类似
+<em>四元数规范化</em> 这样的操作中解放出来。</p></li>
+
+<li><p>它将优化问题的维数降低到<em>原来的</em> 大小。例如，一个限制在一条直线上的量，
+是一个一维的对象，而不管这条直线所处的周围环境空间维度有多大。</p>
+
+<p>在切线空间工作不仅降低了优化算法的计算复杂度，而且改善了算法的数值行为。
+</p>
+
 </li>
 </ol>
-<p>A basic operation one can perform on a manifold is the
-<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="196" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span> operation that computes the result of moving along
-delta in the tangent space at x, and then projecting back onto the
-manifold that x belongs to. Also known as a <em>Retraction</em>,
-<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="197" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span> is a generalization of vector addition in Euclidean
-spaces. Formally, <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="198" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span> is a smooth map from a
+<p>一个能够作用在流形上的基本操作是
+<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="196" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span> 
+运算符，它能够计算在x点沿切空间移动delta的结果，然后重投影到x所属的流形上。也被称为 <em>收缩（Retraction）</em>，
+<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="197" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span>
+是欧几里得空间中向量加法的一般化。最后，<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="198" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span> 
+is a smooth map from a
 manifold <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="199" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-cal mjx-i"><mjx-c class="mjx-c4D TEX-C"></mjx-c></mjx-mi></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic" mathvariant="script">M</mi></mrow></math></mjx-assistive-mml></mjx-container></span> and its tangent space
 <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="200" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.12em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-cal mjx-i"><mjx-c class="mjx-c4D TEX-C"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic" mathvariant="script">M</mi></mrow></msub></math></mjx-assistive-mml></mjx-container></span> to the manifold <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="201" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-cal mjx-i"><mjx-c class="mjx-c4D TEX-C"></mjx-c></mjx-mi></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic" mathvariant="script">M</mi></mrow></math></mjx-assistive-mml></mjx-container></span> that
 obeys the identity</p>
@@ -3465,10 +3459,9 @@ Exponential map <span class="math notranslate nohighlight"><mjx-container class=
 <p>Then,</p>
 <div class="math notranslate nohighlight">
 <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="219" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c45"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mo>⊞</mo><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi mathvariant="normal">Δ</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi><mi>Exp</mi><mo data-mjx-texclass="NONE">⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">Δ</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></div>
-<p>The <code class="docutils literal notranslate"><span class="pre">LocalParameterization</span></code> interface allows the user to define
-and associate with parameter blocks the manifold that they belong
-to. It does so by defining the <code class="docutils literal notranslate"><span class="pre">Plus</span></code> (<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="220" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span>) operation
-and its derivative with respect to <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="221" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math></mjx-assistive-mml></mjx-container></span> at <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="222" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><mn>0</mn></math></mjx-assistive-mml></mjx-container></span>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">LocalParameterization</span></code> 接口允许用户定义和关联他们所属的流形的参数块。
+这通过定义 <code class="docutils literal notranslate"><span class="pre">Plus</span></code> (<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="220" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span>) 
+操作和它在<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="222" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><mn>0</mn></math></mjx-assistive-mml></mjx-container></span>处对于<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="221" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math></mjx-assistive-mml></mjx-container></span>的导数来实现。</p>
 <blockquote>
 <div><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LocalParameterization</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
@@ -3492,29 +3485,30 @@ and its derivative with respect to <span class="math notranslate nohighlight"><m
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres21LocalParameterization10GlobalSizeEv">
 <span id="_CPPv3N5ceres21LocalParameterization10GlobalSizeEv"></span><span id="_CPPv2N5ceres21LocalParameterization10GlobalSizeEv"></span><span id="ceres::LocalParameterization::GlobalSize"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><span class="n"><span class="pre">LocalParameterization</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">GlobalSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterization10GlobalSizeEv" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>The dimension of the ambient space in which the parameter block
-<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="223" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></mjx-assistive-mml></mjx-container></span> lives.</p>
+<dd><p>参数块
+  <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="223" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></mjx-assistive-mml></mjx-container></span>  
+所在的周围环境空间的维度。</p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres21LocalParameterization9LocalSizeEv">
 <span id="_CPPv3N5ceres21LocalParameterization9LocalSizeEv"></span><span id="_CPPv2N5ceres21LocalParameterization9LocalSizeEv"></span><span id="ceres::LocalParameterization::LocalSize"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><span class="n"><span class="pre">LocalParameterization</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">LocalSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterization9LocalSizeEv" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>The size of the tangent space that <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="224" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math></mjx-assistive-mml></mjx-container></span> lives in.</p>
+<dd><p><span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="224" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math></mjx-assistive-mml></mjx-container></span>所在的切空间的维度。</p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK5ceres21LocalParameterization4PlusEPKdPKdPd">
 <span id="_CPPv3NK5ceres21LocalParameterization4PlusEPKdPKdPd"></span><span id="_CPPv2NK5ceres21LocalParameterization4PlusEPKdPKdPd"></span><span id="ceres::LocalParameterization::Plus__doubleCP.doubleCP.doublePC"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><span class="n"><span class="pre">LocalParameterization</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Plus</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">x</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">delta</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">x_plus_delta</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4NK5ceres21LocalParameterization4PlusEPKdPKdPd" title="Permalink to this definition">¶</a><br></dt>
-<dd><p><a class="reference internal" href="nnls_modeling.html#_CPPv4NK5ceres21LocalParameterization4PlusEPKdPKdPd" title="ceres::LocalParameterization::Plus"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">LocalParameterization::Plus()</span></code></a> implements <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="225" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi mathvariant="normal">Δ</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>.</p>
+<dd><p><a class="reference internal" href="nnls_modeling.html#_CPPv4NK5ceres21LocalParameterization4PlusEPKdPKdPd" title="ceres::LocalParameterization::Plus"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">LocalParameterization::Plus()</span></code></a> 实现了 <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="225" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi mathvariant="normal">Δ</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>.</p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK5ceres21LocalParameterization15ComputeJacobianEPKdPd">
 <span id="_CPPv3NK5ceres21LocalParameterization15ComputeJacobianEPKdPd"></span><span id="_CPPv2NK5ceres21LocalParameterization15ComputeJacobianEPKdPd"></span><span id="ceres::LocalParameterization::ComputeJacobian__doubleCP.doublePC"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><span class="n"><span class="pre">LocalParameterization</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">ComputeJacobian</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">x</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">jacobian</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4NK5ceres21LocalParameterization15ComputeJacobianEPKdPd" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Computes the Jacobian matrix</p>
+<dd><p>计算 Jacobian 矩阵</p>
 <div class="math notranslate nohighlight">
 <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="226" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="2"><mjx-c class="mjx-c30"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>J</mi><mo>=</mo><msub><mi>D</mi><mn>2</mn></msub><mo>⊞</mo><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mn>0</mn><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></div>
-<p>in row major form.</p>
+<p>以行为主的形式。</p>
 </dd></dl>
 
 <dl class="cpp function">
@@ -3795,15 +3789,21 @@ parameterization can now be constructed as</p>
 <span id="_CPPv3N5ceres7ProblemE"></span><span id="_CPPv2N5ceres7ProblemE"></span><span id="ceres::Problem"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Problem</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="Permalink to this definition">¶</a><br></dt>
 <dd><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>We are currently in the process of transitioning from
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> to <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifolds</span></code> in the
-Ceres Solver API. During this period, <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a> will
-support using both <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> and
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> objects interchangably. In
-particular, adding a <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> to a
-parameter block is the same as adding a <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> to
-that parameter block. For methods in the API affected by this
-change, see their documentation below.</p>
+<p>在 Ceres Solver API 中，我们现在正处于从
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a>  
+到
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
+的转换过程中。在这一阶段，
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>
+支持互换地使用
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
+和
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a>
+对象。特别是，向参数块中添加
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a>
+与向参数块中添加
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
+是一样的，有关API中受此更改影响的方法，请参阅下面的文档。</p>
 </div>
 <p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a> holds the robustified bounds constrained
 non-linear least squares problem <a class="reference internal" href="nnls_modeling.html#equation-ceresproblem-modeling">(1)</a>. To
