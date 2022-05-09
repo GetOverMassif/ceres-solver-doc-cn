@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)gradient_solver.html -->
+<html class="writer-html5" lang="en"><script async="" src="./gradient_solver_files/analytics.js"></script><script>
+    (function() {
+    class RuffleMimeType {
+        constructor(a, b, c) {
+            this.type = a, this.description = b, this.suffixes = c
+        }
+    }
+    class RuffleMimeTypeArray {
+        constructor(a) {
+            this.__mimetypes = [], this.__named_mimetypes = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__mimetypes.length;
+            this.__mimetypes.push(a), this.__named_mimetypes[a.type] = a, this[a.type] = a, this[b] = a
+        }
+        item(a) {
+            return this.__mimetypes[a]
+        }
+        namedItem(a) {
+            return this.__named_mimetypes[a]
+        }
+        get length() {
+            return this.__mimetypes.length
+        }
+    }
+    class RufflePlugin extends RuffleMimeTypeArray {
+        constructor(a, b, c, d) {
+            super(d), this.name = a, this.description = b, this.filename = c
+        }
+        install(a) {
+            a.enabledPlugin || (a.enabledPlugin = this), super.install(a)
+        }
+    }
+    class RufflePluginArray {
+        constructor(a) {
+            this.__plugins = [], this.__named_plugins = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__plugins.length;
+            this.__plugins.push(a), this.__named_plugins[a.name] = a, this[a.name] = a, this[b] = a
+        }
+        item(a) {
+            return this.__plugins[a]
+        }
+        namedItem(a) {
+            return this.__named_plugins[a]
+        }
+        get length() {
+            return this.__plugins.length
+        }
+    }
+    const FLASH_PLUGIN = new RufflePlugin("Shockwave Flash", "Shockwave Flash 32.0 r0", "ruffle.js", [new RuffleMimeType("application/futuresplash", "Shockwave Flash", "spl"), new RuffleMimeType("application/x-shockwave-flash", "Shockwave Flash", "swf"), new RuffleMimeType("application/x-shockwave-flash2-preview", "Shockwave Flash", "swf"), new RuffleMimeType("application/vnd.adobe.flash-movie", "Shockwave Flash", "swf")]);
+
+    function install_plugin(a) {
+        navigator.plugins.install || Object.defineProperty(navigator, "plugins", {
+            value: new RufflePluginArray(navigator.plugins),
+            writable: !1
+        }), navigator.plugins.install(a), 0 < a.length && !navigator.mimeTypes.install && Object.defineProperty(navigator, "mimeTypes", {
+            value: new RuffleMimeTypeArray(navigator.mimeTypes),
+            writable: !1
+        });
+        for (var b = 0; b < a.length; b += 1) navigator.mimeTypes.install(a[b])
+    }
+    install_plugin(FLASH_PLUGIN);
+})();
+</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>General Unconstrained Minimization — Ceres Solver</title>
+      <link rel="stylesheet" href="./gradient_solver_files/pygments.css" type="text/css">
+      <link rel="stylesheet" href="./gradient_solver_files/theme.css" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="./gradient_solver_files/documentation_options.js"></script>
+        <script src="./gradient_solver_files/jquery.js"></script>
+        <script src="./gradient_solver_files/underscore.js"></script>
+        <script src="./gradient_solver_files/doctools.js"></script>
+        <script>window.MathJax = {"HTML-CSS": {"availableFonts": ["TeX"], "scale": 90}}</script>
+        <script defer="defer" src="./gradient_solver_files/tex-mml-chtml.js"></script>
+    <script src="./gradient_solver_files/theme.js"></script>
+    <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
+    <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
+    <link rel="next" title="FAQS, Tips &amp; Tricks" href="faqs.html">
+    <link rel="prev" title="Covariance Estimation" href="nnls_covariance.html"> 
+<style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-mfrac {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-frac {
+  display: inline-block;
+  vertical-align: 0.17em;
+  padding: 0 .22em;
+}
+
+mjx-frac[type="d"] {
+  vertical-align: .04em;
+}
+
+mjx-frac[delims] {
+  padding: 0 .1em;
+}
+
+mjx-frac[atop] {
+  padding: 0 .12em;
+}
+
+mjx-frac[atop][delims] {
+  padding: 0;
+}
+
+mjx-dtable {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-dtable > * {
+  font-size: 2000%;
+}
+
+mjx-dbox {
+  display: block;
+  font-size: 5%;
+}
+
+mjx-num {
+  display: block;
+  text-align: center;
+}
+
+mjx-den {
+  display: block;
+  text-align: center;
+}
+
+mjx-mfrac[bevelled] > mjx-num {
+  display: inline-block;
+}
+
+mjx-mfrac[bevelled] > mjx-den {
+  display: inline-block;
+}
+
+mjx-den[align="right"], mjx-num[align="right"] {
+  text-align: right;
+}
+
+mjx-den[align="left"], mjx-num[align="left"] {
+  text-align: left;
+}
+
+mjx-nstrut {
+  display: inline-block;
+  height: .054em;
+  width: 0;
+  vertical-align: -.054em;
+}
+
+mjx-nstrut[type="d"] {
+  height: .217em;
+  vertical-align: -.217em;
+}
+
+mjx-dstrut {
+  display: inline-block;
+  height: .505em;
+  width: 0;
+}
+
+mjx-dstrut[type="d"] {
+  height: .726em;
+}
+
+mjx-line {
+  display: block;
+  box-sizing: border-box;
+  min-height: 1px;
+  height: .06em;
+  border-top: .06em solid;
+  margin: .06em -.1em;
+  overflow: hidden;
+}
+
+mjx-line[type="d"] {
+  margin: .18em -.1em;
+}
+
+mjx-mrow {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msubsup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-script {
+  display: inline-block;
+  padding-right: .05em;
+  padding-left: .033em;
+}
+
+mjx-script > * {
+  display: block;
+}
+
+mjx-msub {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D43C.TEX-I::before {
+  padding: 0.683em 0.504em 0 0;
+  content: "I";
+}
+
+mjx-c.mjx-c2217::before {
+  padding: 0.465em 0.5em 0 0;
+  content: "\2217";
+}
+
+mjx-c.mjx-c1D6FE.TEX-I::before {
+  padding: 0.441em 0.543em 0.216em 0;
+  content: "\3B3";
+}
+
+mjx-c.mjx-c3D::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "=";
+}
+
+mjx-c.mjx-c1D466.TEX-I::before {
+  padding: 0.442em 0.49em 0.205em 0;
+  content: "y";
+}
+
+mjx-c.mjx-c2032::before {
+  padding: 0.56em 0.275em 0 0;
+  content: "\2032";
+}
+
+mjx-c.mjx-c1D458.TEX-I::before {
+  padding: 0.694em 0.521em 0.011em 0;
+  content: "k";
+}
+
+mjx-c.mjx-c1D460.TEX-I::before {
+  padding: 0.442em 0.469em 0.01em 0;
+  content: "s";
+}
+
+mjx-c.mjx-c2207::before {
+  padding: 0.683em 0.833em 0.033em 0;
+  content: "\2207";
+}
+
+mjx-c.mjx-c1D453.TEX-I::before {
+  padding: 0.705em 0.55em 0.205em 0;
+  content: "f";
+}
+
+mjx-c.mjx-c2B::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "+";
+}
+
+mjx-c.mjx-c31::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "1";
+}
+
+mjx-c.mjx-c2212::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "\2212";
+}
+
+mjx-c.mjx-c1D465.TEX-I::before {
+  padding: 0.442em 0.572em 0.011em 0;
+  content: "x";
+}
+
+mjx-c.mjx-c28::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: "(";
+}
+
+mjx-c.mjx-c29::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: ")";
+}
+
+mjx-c.mjx-c2016::before {
+  padding: 0.75em 0.5em 0.25em 0;
+  content: "\2225";
+}
+
+mjx-c.mjx-c394::before {
+  padding: 0.716em 0.833em 0 0;
+  content: "\394";
+}
+
+mjx-c.mjx-c221E::before {
+  padding: 0.442em 1em 0.011em 0;
+  content: "\221E";
+}
+
+mjx-c.mjx-c3C::before {
+  padding: 0.54em 0.778em 0.04em 0;
+  content: "<";
+}
+
+mjx-c.mjx-c6D::before {
+  padding: 0.442em 0.833em 0 0;
+  content: "m";
+}
+
+mjx-c.mjx-c69::before {
+  padding: 0.669em 0.278em 0 0;
+  content: "i";
+}
+
+mjx-c.mjx-c6E::before {
+  padding: 0.442em 0.556em 0 0;
+  content: "n";
+}
+
+mjx-c.mjx-c5F::before {
+  padding: 0 0.5em 0.062em 0;
+  content: "_";
+}
+
+mjx-c.mjx-c6C::before {
+  padding: 0.694em 0.278em 0 0;
+  content: "l";
+}
+
+mjx-c.mjx-c65::before {
+  padding: 0.448em 0.444em 0.011em 0;
+  content: "e";
+}
+
+mjx-c.mjx-c73::before {
+  padding: 0.448em 0.394em 0.011em 0;
+  content: "s";
+}
+
+mjx-c.mjx-c61::before {
+  padding: 0.448em 0.5em 0.011em 0;
+  content: "a";
+}
+
+mjx-c.mjx-c72::before {
+  padding: 0.442em 0.392em 0 0;
+  content: "r";
+}
+
+mjx-c.mjx-c63::before {
+  padding: 0.448em 0.444em 0.011em 0;
+  content: "c";
+}
+
+mjx-c.mjx-c68::before {
+  padding: 0.694em 0.556em 0 0;
+  content: "h";
+}
+
+mjx-c.mjx-c74::before {
+  padding: 0.615em 0.389em 0.01em 0;
+  content: "t";
+}
+
+mjx-c.mjx-c70::before {
+  padding: 0.442em 0.556em 0.194em 0;
+  content: "p";
+}
+
+mjx-c.mjx-c7A::before {
+  padding: 0.431em 0.444em 0 0;
+  content: "z";
+}
+
+mjx-c.mjx-c22C5::before {
+  padding: 0.31em 0.278em 0 0;
+  content: "\22C5";
+}
+
+mjx-c.mjx-c2264::before {
+  padding: 0.636em 0.778em 0.138em 0;
+  content: "\2264";
+}
+
+mjx-c.mjx-c30::before {
+  padding: 0.666em 0.5em 0.022em 0;
+  content: "0";
+}
+
+mjx-c.mjx-c75::before {
+  padding: 0.442em 0.556em 0.011em 0;
+  content: "u";
+}
+
+mjx-c.mjx-c66::before {
+  padding: 0.705em 0.372em 0 0;
+  content: "f";
+}
+
+mjx-c.mjx-c64::before {
+  padding: 0.694em 0.556em 0.011em 0;
+  content: "d";
+}
+
+mjx-c.mjx-c5B::before {
+  padding: 0.75em 0.278em 0.25em 0;
+  content: "[";
+}
+
+mjx-c.mjx-c5D::before {
+  padding: 0.75em 0.278em 0.25em 0;
+  content: "]";
+}
+
+mjx-c.mjx-c77::before {
+  padding: 0.431em 0.722em 0.011em 0;
+  content: "w";
+}
+
+mjx-c.mjx-c2265::before {
+  padding: 0.636em 0.778em 0.138em 0;
+  content: "\2265";
+}
+
+mjx-c.mjx-c78::before {
+  padding: 0.431em 0.528em 0 0;
+  content: "x";
+}
+
+mjx-c.mjx-c6F::before {
+  padding: 0.448em 0.5em 0.01em 0;
+  content: "o";
+}
+
+mjx-c.mjx-c76::before {
+  padding: 0.431em 0.528em 0.011em 0;
+  content: "v";
+}
+
+mjx-c.mjx-c1D451.TEX-I::before {
+  padding: 0.694em 0.52em 0.01em 0;
+  content: "d";
+}
+
+mjx-c.mjx-cA0::before {
+  padding: 0 0.25em 0 0;
+  content: "\A0";
+}
+
+mjx-c.mjx-c20::before {
+  padding: 0 0.25em 0 0;
+  content: " ";
+}
+
+mjx-c.mjx-c3E::before {
+  padding: 0.54em 0.778em 0.04em 0;
+  content: ">";
+}
+
+mjx-c.mjx-c2E::before {
+  padding: 0.12em 0.278em 0 0;
+  content: ".";
+}
+
+mjx-c.mjx-c7C::before {
+  padding: 0.75em 0.278em 0.249em 0;
+  content: "|";
+}
+
+mjx-c.mjx-c3A0::before {
+  padding: 0.68em 0.75em 0 0;
+  content: "\3A0";
+}
+
+mjx-c.mjx-c229E.TEX-A::before {
+  padding: 0.689em 0.778em 0 0;
+  content: "\229E";
+}
+
+mjx-c.mjx-c2C::before {
+  padding: 0.121em 0.278em 0.194em 0;
+  content: ",";
+}
+
+mjx-c.mjx-c1D454.TEX-I::before {
+  padding: 0.442em 0.477em 0.205em 0;
+  content: "g";
+}
+
+mjx-c.mjx-c67::before {
+  padding: 0.453em 0.5em 0.206em 0;
+  content: "g";
+}
+</style><style>hcfy-result.__hcfy__result__loaded__.__hcfy__result__both__{border: 1px dotted}</style></head>
+
+<body class="wy-body-for-nav vsc-initialized" data-new-gr-c-s-check-loaded="14.1013.0" data-gr-ext-installed=""> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="index.html" class="icon icon-home"> Ceres Solver
+          </a>
+              <div class="version">
+                2.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="http://ceres-solver.org/search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current" aria-expanded="true">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivatives.html">On Derivatives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="gradient_solver.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>General Unconstrained Minimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gradient_solver.html#modeling"><button class="toctree-expand" title="Open/close menu"></button>Modeling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#firstorderfunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gradient_solver.html#solving"><button class="toctree-expand" title="Open/close menu"></button>Solving</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblemsolver-options"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Options</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblemsolver-summary"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Summary</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ceres Solver</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> »</li>
+      <li>General Unconstrained Minimization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="general-unconstrained-minimization">
+<span id="chapter-gradient-problem-solver"></span><h1>General Unconstrained Minimization<a class="headerlink" href="gradient_solver.html#general-unconstrained-minimization" title="Permalink to this headline">¶</a></h1>
+<section id="modeling">
+<h2>Modeling<a class="headerlink" href="gradient_solver.html#modeling" title="Permalink to this headline">¶</a></h2>
+<section id="firstorderfunction">
+<h3><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="ceres::FirstOrderFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code></a><a class="headerlink" href="gradient_solver.html#firstorderfunction" title="Permalink to this headline">¶</a></h3>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres18FirstOrderFunctionE">
+<span id="_CPPv3N5ceres18FirstOrderFunctionE"></span><span id="_CPPv2N5ceres18FirstOrderFunctionE"></span><span id="ceres::FirstOrderFunction"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FirstOrderFunction</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Instances of <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="ceres::FirstOrderFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code></a> implement the evaluation of
+a function and its gradient.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FirstOrderFunction</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">   </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">FirstOrderFunction</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="w">   </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Evaluate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">parameters</span><span class="p">,</span><span class="w"></span>
+<span class="w">                         </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">cost</span><span class="p">,</span><span class="w"></span>
+<span class="w">                         </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">gradient</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">virtual</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">NumParameters</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5ceres18FirstOrderFunction8EvaluateEPCKdPdPd">
+<span id="_CPPv3NK5ceres18FirstOrderFunction8EvaluateEPCKdPdPd"></span><span id="_CPPv2NK5ceres18FirstOrderFunction8EvaluateEPCKdPdPd"></span><span id="ceres::FirstOrderFunction::Evaluate__doubleCPC.doubleP.doublePC"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="ceres::FirstOrderFunction"><span class="n"><span class="pre">FirstOrderFunction</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Evaluate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">parameters</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cost</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">gradient</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="gradient_solver.html#_CPPv4NK5ceres18FirstOrderFunction8EvaluateEPCKdPdPd" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Evaluate the cost/value of the function. If <code class="docutils literal notranslate"><span class="pre">gradient</span></code> is not
+<code class="docutils literal notranslate"><span class="pre">nullptr</span></code> then evaluate the gradient too. If evaluation is
+successful return, <code class="docutils literal notranslate"><span class="pre">true</span></code> else return <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cost</span></code> guaranteed to be never <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>, <code class="docutils literal notranslate"><span class="pre">gradient</span></code> can be <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5ceres18FirstOrderFunction13NumParametersEv">
+<span id="_CPPv3NK5ceres18FirstOrderFunction13NumParametersEv"></span><span id="_CPPv2NK5ceres18FirstOrderFunction13NumParametersEv"></span><span id="ceres::FirstOrderFunction::NumParametersC"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="ceres::FirstOrderFunction"><span class="n"><span class="pre">FirstOrderFunction</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">NumParameters</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="gradient_solver.html#_CPPv4NK5ceres18FirstOrderFunction13NumParametersEv" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Number of parameters in the domain of the function.</p>
+</dd></dl>
+
+</section>
+<section id="gradientproblem">
+<h3><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres15GradientProblemE" title="ceres::GradientProblem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a><a class="headerlink" href="gradient_solver.html#gradientproblem" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> interface and associated classes
+are deprecated. They will be removed in the version 2.2.0. Please use
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> based constructor instead.</p>
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres15GradientProblemE">
+<span id="_CPPv3N5ceres15GradientProblemE"></span><span id="_CPPv2N5ceres15GradientProblemE"></span><span id="ceres::GradientProblem"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GradientProblem</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres15GradientProblemE" title="Permalink to this definition">¶</a><br></dt>
+<dd></dd></dl>
+
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GradientProblem</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">GradientProblem</span><span class="p">(</span><span class="n">FirstOrderFunction</span><span class="o">*</span><span class="w"> </span><span class="n">function</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">GradientProblem</span><span class="p">(</span><span class="n">FirstOrderFunction</span><span class="o">*</span><span class="w"> </span><span class="n">function</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">LocalParameterization</span><span class="o">*</span><span class="w"> </span><span class="n">parameterization</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">GradientProblem</span><span class="p">(</span><span class="n">FirstOrderFunction</span><span class="o">*</span><span class="w"> </span><span class="n">function</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">Manifold</span><span class="o">*</span><span class="w"> </span><span class="n">manifold</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">NumParameters</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">NumLocalParameters</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">NumTangentParameters</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="nf">NumTangentParameters</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">Evaluate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">cost</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">gradient</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">Plus</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">x_plus_delta</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Instances of <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres15GradientProblemE" title="ceres::GradientProblem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a> represent general non-linear
+optimization problems that must be solved using just the value of the
+objective function and its gradient. Unlike the <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>
+class, which can only be used to model non-linear least squares
+problems, instances of <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres15GradientProblemE" title="ceres::GradientProblem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a> not restricted in the
+form of the objective function.</p>
+<p>Structurally <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres15GradientProblemE" title="ceres::GradientProblem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a> is a composition of a
+<a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="ceres::FirstOrderFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code></a> and optionally a
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> or a <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>.</p>
+<p>The <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="ceres::FirstOrderFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code></a> is responsible for evaluating the cost
+and gradient of the objective function.</p>
+<p>The <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a>/<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> is responsible
+for going back and forth between the ambient space and the local
+tangent space. When a <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> or a
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> is not provided, then the tangent space is assumed
+to coincide with the ambient Euclidean space that the gradient vector
+lives in.</p>
+<p>The constructor takes ownership of the <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres18FirstOrderFunctionE" title="ceres::FirstOrderFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code></a> and
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> or <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> objects passed to
+it.</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres5SolveERKN21GradientProblemSolver7OptionsERK15GradientProblemPdPN21GradientProblemSolver7SummaryE">
+<span id="_CPPv3N5ceres5SolveERKN21GradientProblemSolver7OptionsERK15GradientProblemPdPN21GradientProblemSolver7SummaryE"></span><span id="_CPPv2N5ceres5SolveERKN21GradientProblemSolver7OptionsERK15GradientProblemPdPN21GradientProblemSolver7SummaryE"></span><span id="ceres::Solve__GradientProblemSolver::OptionsCR.GradientProblemCR.doubleP.GradientProblemSolver::SummaryP"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Solve</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">options</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres15GradientProblemE" title="ceres::GradientProblem"><span class="n"><span class="pre">GradientProblem</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">problem</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">parameters</span></span>, <span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">summary</span></span><span class="sig-paren">)</span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres5SolveERKN21GradientProblemSolver7OptionsERK15GradientProblemPdPN21GradientProblemSolver7SummaryE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Solve the given <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres15GradientProblemE" title="ceres::GradientProblem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a> using the values in
+<code class="docutils literal notranslate"><span class="pre">parameters</span></code> as the initial guess of the solution.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="solving">
+<h2>Solving<a class="headerlink" href="gradient_solver.html#solving" title="Permalink to this headline">¶</a></h2>
+<section id="gradientproblemsolver-options">
+<h3><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Options</span></code></a><a class="headerlink" href="gradient_solver.html#gradientproblemsolver-options" title="Permalink to this headline">¶</a></h3>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7OptionsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7OptionsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7OptionsE"></span><span id="ceres::GradientProblemSolver::Options"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Options</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Options</span></code></a> controls the overall
+behavior of the solver. We list the various settings and their
+default values below.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5ceres21GradientProblemSolver7Options7IsValidEP6string">
+<span id="_CPPv3NK5ceres21GradientProblemSolver7Options7IsValidEP6string"></span><span id="_CPPv2NK5ceres21GradientProblemSolver7Options7IsValidEP6string"></span><span id="ceres::GradientProblemSolver::Options::IsValid__stringPC"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">IsValid</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">error</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="gradient_solver.html#_CPPv4NK5ceres21GradientProblemSolver7Options7IsValidEP6string" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Validate the values in the options struct and returns true on
+success. If there is a problem, the method returns false with
+<code class="docutils literal notranslate"><span class="pre">error</span></code> containing a textual description of the cause.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options26line_search_direction_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options26line_search_direction_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options26line_search_direction_typeE"></span><span id="ceres::GradientProblemSolver::Options::line_search_direction_type__LineSearchDirectionType"></span><span class="n"><span class="pre">LineSearchDirectionType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_direction_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options26line_search_direction_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">LBFGS</span></code></p>
+<p>Choices are <code class="docutils literal notranslate"><span class="pre">STEEPEST_DESCENT</span></code>, <code class="docutils literal notranslate"><span class="pre">NONLINEAR_CONJUGATE_GRADIENT</span></code>,
+<code class="docutils literal notranslate"><span class="pre">BFGS</span></code> and <code class="docutils literal notranslate"><span class="pre">LBFGS</span></code>.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options16line_search_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options16line_search_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options16line_search_typeE"></span><span id="ceres::GradientProblemSolver::Options::line_search_type__LineSearchType"></span><span class="n"><span class="pre">LineSearchType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options16line_search_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">WOLFE</span></code></p>
+<p>Choices are <code class="docutils literal notranslate"><span class="pre">ARMIJO</span></code> and <code class="docutils literal notranslate"><span class="pre">WOLFE</span></code> (strong Wolfe conditions).
+Note that in order for the assumptions underlying the <code class="docutils literal notranslate"><span class="pre">BFGS</span></code> and
+<code class="docutils literal notranslate"><span class="pre">LBFGS</span></code> line search direction algorithms to be guaranteed to be
+satisifed, the <code class="docutils literal notranslate"><span class="pre">WOLFE</span></code> line search should be used.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options33nonlinear_conjugate_gradient_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options33nonlinear_conjugate_gradient_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options33nonlinear_conjugate_gradient_typeE"></span><span id="ceres::GradientProblemSolver::Options::nonlinear_conjugate_gradient_type__NonlinearConjugateGradientType"></span><span class="n"><span class="pre">NonlinearConjugateGradientType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">nonlinear_conjugate_gradient_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options33nonlinear_conjugate_gradient_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">FLETCHER_REEVES</span></code></p>
+<p>Choices are <code class="docutils literal notranslate"><span class="pre">FLETCHER_REEVES</span></code>, <code class="docutils literal notranslate"><span class="pre">POLAK_RIBIERE</span></code> and
+<code class="docutils literal notranslate"><span class="pre">HESTENES_STIEFEL</span></code>.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options13max_lbfs_rankE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options13max_lbfs_rankE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options13max_lbfs_rankE"></span><span id="ceres::GradientProblemSolver::Options::max_lbfs_rank__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_lbfs_rank</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options13max_lbfs_rankE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: 20</p>
+<p>The L-BFGS hessian approximation is a low rank approximation to the
+inverse of the Hessian matrix. The rank of the approximation
+determines (linearly) the space and time complexity of using the
+approximation. Higher the rank, the better is the quality of the
+approximation. The increase in quality is however is bounded for a
+number of reasons.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The method only uses secant information and not actual
+derivatives.</p></li>
+<li><p>The Hessian approximation is constrained to be positive
+definite.</p></li>
+</ol>
+</div></blockquote>
+<p>So increasing this rank to a large number will cost time and space
+complexity without the corresponding increase in solution
+quality. There are no hard and fast rules for choosing the maximum
+rank. The best choice usually requires some problem specific
+experimentation.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options39use_approximate_eigenvalue_bfgs_scalingE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options39use_approximate_eigenvalue_bfgs_scalingE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options39use_approximate_eigenvalue_bfgs_scalingE"></span><span id="ceres::GradientProblemSolver::Options::use_approximate_eigenvalue_bfgs_scaling__b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">use_approximate_eigenvalue_bfgs_scaling</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options39use_approximate_eigenvalue_bfgs_scalingE" title="Permalink to this definition">¶</a><br></dt>
+<dd><blockquote>
+<div><p>Default: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<p>As part of the <code class="docutils literal notranslate"><span class="pre">BFGS</span></code> update step / <code class="docutils literal notranslate"><span class="pre">LBFGS</span></code> right-multiply
+step, the initial inverse Hessian approximation is taken to be the
+Identity.  However, <a class="reference internal" href="bibliography.html#oren" id="id1"><span>[Oren]</span></a> showed that using instead <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43C TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>I</mi><mo>∗</mo><mi>γ</mi></math></mjx-assistive-mml></mjx-container></span>, where <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>γ</mi></math></mjx-assistive-mml></mjx-container></span> is a scalar chosen to approximate an
+eigenvalue of the true inverse Hessian can result in improved
+convergence in a wide variety of cases.  Setting
+<code class="docutils literal notranslate"><span class="pre">use_approximate_eigenvalue_bfgs_scaling</span></code> to true enables this
+scaling in <code class="docutils literal notranslate"><span class="pre">BFGS</span></code> (before first iteration) and <code class="docutils literal notranslate"><span class="pre">LBFGS</span></code> (at each
+iteration).</p>
+<p>Precisely, approximate eigenvalue scaling equates to</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="2" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D466 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.277em; margin-left: 0px;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D460 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D466 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.317em; margin-left: 0px;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D466 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>γ</mi><mo>=</mo><mfrac><mrow><msubsup><mi>y</mi><mi>k</mi><mo data-mjx-alternate="1">′</mo></msubsup><msub><mi>s</mi><mi>k</mi></msub></mrow><mrow><msubsup><mi>y</mi><mi>k</mi><mo data-mjx-alternate="1">′</mo></msubsup><msub><mi>y</mi><mi>k</mi></msub></mrow></mfrac></math></mjx-assistive-mml></mjx-container></div>
+<p>With:</p>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="3" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D466 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="4"><mjx-c class="mjx-c2207"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.06em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="3"><mjx-c class="mjx-c2207"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.06em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>y</mi><mi>k</mi></msub><mo>=</mo><mi mathvariant="normal">∇</mi><msub><mi>f</mi><mrow data-mjx-texclass="ORD"><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><mi mathvariant="normal">∇</mi><msub><mi>f</mi><mi>k</mi></msub></math></mjx-assistive-mml></mjx-container></div>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="4" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D460 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>s</mi><mi>k</mi></msub><mo>=</mo><msub><mi>x</mi><mrow data-mjx-texclass="ORD"><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>x</mi><mi>k</mi></msub></math></mjx-assistive-mml></mjx-container></div>
+<p>Where <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>f</mi><mo stretchy="false">(</mo><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> is the line search objective and <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="6" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></mjx-assistive-mml></mjx-container></span> the
+vector of parameter values <a class="reference internal" href="bibliography.html#nocedalwright" id="id2"><span>[NocedalWright]</span></a>.</p>
+<p>It is important to note that approximate eigenvalue scaling does
+<strong>not</strong> <em>always</em> improve convergence, and that it can in fact
+<em>significantly</em> degrade performance for certain classes of problem,
+which is why it is disabled by default.  In particular it can
+degrade performance when the sensitivity of the problem to different
+parameters varies significantly, as in this case a single scalar
+factor fails to capture this variation and detrimentally downscales
+parts of the Jacobian approximation which correspond to
+low-sensitivity parameters. It can also reduce the robustness of the
+solution to errors in the Jacobians.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options30line_search_interpolation_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options30line_search_interpolation_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options30line_search_interpolation_typeE"></span><span id="ceres::GradientProblemSolver::Options::line_search_interpolation_type__LineSearchIterpolationType"></span><span class="n"><span class="pre">LineSearchIterpolationType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_interpolation_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options30line_search_interpolation_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">CUBIC</span></code></p>
+<p>Degree of the polynomial used to approximate the objective
+function. Valid values are <code class="docutils literal notranslate"><span class="pre">BISECTION</span></code>, <code class="docutils literal notranslate"><span class="pre">QUADRATIC</span></code> and
+<code class="docutils literal notranslate"><span class="pre">CUBIC</span></code>.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options25min_line_search_step_sizeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options25min_line_search_step_sizeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options25min_line_search_step_sizeE"></span><span id="ceres::GradientProblemSolver::Options::min_line_search_step_size__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">min_line_search_step_size</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options25min_line_search_step_sizeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>The line search terminates if:</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="7" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-n" size="s"><mjx-c class="mjx-c221E"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c68"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi mathvariant="normal">Δ</mi><msub><mi>x</mi><mi>k</mi></msub><msub><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi mathvariant="normal">∞</mi></msub><mo>&lt;</mo><mtext>min_line_search_step_size</mtext></math></mjx-assistive-mml></mjx-container></div>
+<p>where <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="8" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-n" size="s"><mjx-c class="mjx-c221E"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mo>⋅</mo><msub><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi mathvariant="normal">∞</mi></msub></math></mjx-assistive-mml></mjx-container></span> refers to the max norm, and
+<span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="9" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><msub><mi>x</mi><mi>k</mi></msub></math></mjx-assistive-mml></mjx-container></span> is the step change in the parameter values at
+the <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="10" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi></math></mjx-assistive-mml></mjx-container></span>-th iteration.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options40line_search_sufficient_function_decreaseE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options40line_search_sufficient_function_decreaseE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options40line_search_sufficient_function_decreaseE"></span><span id="ceres::GradientProblemSolver::Options::line_search_sufficient_function_decrease__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_sufficient_function_decrease</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options40line_search_sufficient_function_decreaseE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">1e-4</span></code></p>
+<p>Solving the line search problem exactly is computationally
+prohibitive. Fortunately, line search based optimization algorithms
+can still guarantee convergence if instead of an exact solution,
+the line search algorithm returns a solution which decreases the
+value of the objective function sufficiently. More precisely, we
+are looking for a step size s.t.</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="11" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mtext class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c30"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c66"></mjx-c><mjx-c class="mjx-c66"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c64"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.053em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c30"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>f</mi><mo stretchy="false">(</mo><mtext>step_size</mtext><mo stretchy="false">)</mo><mo>≤</mo><mi>f</mi><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>+</mo><mtext>sufficient_decrease</mtext><mo>∗</mo><mo stretchy="false">[</mo><msup><mi>f</mi><mo data-mjx-alternate="1">′</mo></msup><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo>∗</mo><mtext>step_size</mtext><mo stretchy="false">]</mo></math></mjx-assistive-mml></mjx-container></div>
+<p>This condition is known as the Armijo condition.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options32max_line_search_step_contractionE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options32max_line_search_step_contractionE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options32max_line_search_step_contractionE"></span><span id="ceres::GradientProblemSolver::Options::max_line_search_step_contraction__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_line_search_step_contraction</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options32max_line_search_step_contractionE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">1e-3</span></code></p>
+<p>In each iteration of the line search,</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="12" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c77"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2265"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c68"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mtext>new_step_size</mtext><mo>≥</mo><mtext>max_line_search_step_contraction</mtext><mo>∗</mo><mtext>step_size</mtext></math></mjx-assistive-mml></mjx-container></div>
+<p>Note that by definition, for contraction:</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="13" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mn class="mjx-n"><mjx-c class="mjx-c30"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mn>0</mn><mo>&lt;</mo><mtext>max_step_contraction</mtext><mo>&lt;</mo><mtext>min_step_contraction</mtext><mo>&lt;</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container></div>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options32min_line_search_step_contractionE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options32min_line_search_step_contractionE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options32min_line_search_step_contractionE"></span><span id="ceres::GradientProblemSolver::Options::min_line_search_step_contraction__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">min_line_search_step_contraction</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options32min_line_search_step_contractionE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">0.6</span></code></p>
+<p>In each iteration of the line search,</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="14" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c77"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c68"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mtext>new_step_size</mtext><mo>≤</mo><mtext>min_line_search_step_contraction</mtext><mo>∗</mo><mtext>step_size</mtext></math></mjx-assistive-mml></mjx-container></div>
+<p>Note that by definition, for contraction:</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="15" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mn class="mjx-n"><mjx-c class="mjx-c30"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3C"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mn>0</mn><mo>&lt;</mo><mtext>max_step_contraction</mtext><mo>&lt;</mo><mtext>min_step_contraction</mtext><mo>&lt;</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container></div>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options40max_num_line_search_step_size_iterationsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options40max_num_line_search_step_size_iterationsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options40max_num_line_search_step_size_iterationsE"></span><span id="ceres::GradientProblemSolver::Options::max_num_line_search_step_size_iterations__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_num_line_search_step_size_iterations</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options40max_num_line_search_step_size_iterationsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">20</span></code></p>
+<p>Maximum number of trial step size iterations during each line
+search, if a step size satisfying the search conditions cannot be
+found within this number of trials, the line search will stop.</p>
+<p>As this is an ‘artificial’ constraint (one imposed by the user, not
+the underlying math), if <code class="docutils literal notranslate"><span class="pre">WOLFE</span></code> line search is being used, <em>and</em>
+points satisfying the Armijo sufficient (function) decrease
+condition have been found during the current search (in <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="16" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>≤</mo></math></mjx-assistive-mml></mjx-container></span>
+<code class="docutils literal notranslate"><span class="pre">max_num_line_search_step_size_iterations</span></code>).  Then, the step size
+with the lowest function value which satisfies the Armijo condition
+will be returned as the new valid step, even though it does <em>not</em>
+satisfy the strong Wolfe conditions.  This behaviour protects
+against early termination of the optimizer at a sub-optimal point.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options38max_num_line_search_direction_restartsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options38max_num_line_search_direction_restartsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options38max_num_line_search_direction_restartsE"></span><span id="ceres::GradientProblemSolver::Options::max_num_line_search_direction_restarts__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_num_line_search_direction_restarts</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options38max_num_line_search_direction_restartsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">5</span></code></p>
+<p>Maximum number of restarts of the line search direction algorithm
+before terminating the optimization. Restarts of the line search
+direction algorithm occur when the current algorithm fails to
+produce a new descent direction. This typically indicates a
+numerical failure, or a breakdown in the validity of the
+approximations used.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options41line_search_sufficient_curvature_decreaseE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options41line_search_sufficient_curvature_decreaseE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options41line_search_sufficient_curvature_decreaseE"></span><span id="ceres::GradientProblemSolver::Options::line_search_sufficient_curvature_decrease__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_sufficient_curvature_decrease</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options41line_search_sufficient_curvature_decreaseE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">0.9</span></code></p>
+<p>The strong Wolfe conditions consist of the Armijo sufficient
+decrease condition, and an additional requirement that the
+step size be chosen s.t. the <em>magnitude</em> (‘strong’ Wolfe
+conditions) of the gradient along the search direction
+decreases sufficiently. Precisely, this second condition
+is that we seek a step size s.t.</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="17" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.053em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mtext class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c66"></mjx-c><mjx-c class="mjx-c66"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c76"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c64"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.053em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c30"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><msup><mi>f</mi><mo data-mjx-alternate="1">′</mo></msup><mo stretchy="false">(</mo><mtext>step_size</mtext><mo stretchy="false">)</mo><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mo>≤</mo><mtext>sufficient_curvature_decrease</mtext><mo>∗</mo><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><msup><mi>f</mi><mo data-mjx-alternate="1">′</mo></msup><mo stretchy="false">(</mo><mn>0</mn><mo stretchy="false">)</mo><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo></math></mjx-assistive-mml></mjx-container></div>
+<p>Where <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="18" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>f</mi><mo stretchy="false">(</mo><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> is the line search objective and <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="19" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.053em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>f</mi><mo data-mjx-alternate="1">′</mo></msup><mo stretchy="false">(</mo><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> is the derivative
+of <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="20" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>f</mi></math></mjx-assistive-mml></mjx-container></span> with respect to the step size: <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="21" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mfrac><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-mrow size="s"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mrow size="s"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c></mjx-mtext><mjx-mtext class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c20"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mrow><mi>d</mi><mi>f</mi></mrow><mrow><mi>d</mi><mtext>&nbsp;</mtext><mtext>step size</mtext></mrow></mfrac></math></mjx-assistive-mml></mjx-container></span>.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options30max_line_search_step_expansionE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options30max_line_search_step_expansionE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options30max_line_search_step_expansionE"></span><span id="ceres::GradientProblemSolver::Options::max_line_search_step_expansion__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_line_search_step_expansion</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options30max_line_search_step_expansionE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">10.0</span></code></p>
+<p>During the bracketing phase of a Wolfe line search, the step size
+is increased until either a point satisfying the Wolfe conditions
+is found, or an upper bound for a bracket containing a point
+satisfying the conditions is found.  Precisely, at each iteration
+of the expansion:</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="22" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c77"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mtext>new_step_size</mtext><mo>≤</mo><mtext>max_step_expansion</mtext><mo>∗</mo><mtext>step_size</mtext></math></mjx-assistive-mml></mjx-container></div>
+<p>By definition for expansion</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="23" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3E"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mtext>max_step_expansion</mtext><mo>&gt;</mo><mn>1.0</mn></math></mjx-assistive-mml></mjx-container></div>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options18max_num_iterationsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options18max_num_iterationsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options18max_num_iterationsE"></span><span id="ceres::GradientProblemSolver::Options::max_num_iterations__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_num_iterations</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options18max_num_iterationsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">50</span></code></p>
+<p>Maximum number of iterations for which the solver should run.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options26max_solver_time_in_secondsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options26max_solver_time_in_secondsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options26max_solver_time_in_secondsE"></span><span id="ceres::GradientProblemSolver::Options::max_solver_time_in_seconds__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_solver_time_in_seconds</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options26max_solver_time_in_secondsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">1e6</span></code>
+Maximum amount of time for which the solver should run.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options18function_toleranceE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options18function_toleranceE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options18function_toleranceE"></span><span id="ceres::GradientProblemSolver::Options::function_tolerance__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">function_tolerance</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options18function_toleranceE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">1e-6</span></code></p>
+<p>Solver terminates if</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="24" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mfrac><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mtext class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mtext class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c></mjx-mtext></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c66"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><mrow><mo stretchy="false">|</mo><mi mathvariant="normal">Δ</mi><mtext>cost</mtext><mo stretchy="false">|</mo></mrow><mtext>cost</mtext></mfrac><mo>≤</mo><mtext>function_tolerance</mtext></math></mjx-assistive-mml></mjx-container></div>
+<p>where, <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="25" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mtext class="mjx-n"><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c74"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mtext>cost</mtext></math></mjx-assistive-mml></mjx-container></span> is the change in objective
+function value (up or down) in the current iteration of the line search.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options18gradient_toleranceE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options18gradient_toleranceE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options18gradient_toleranceE"></span><span id="ceres::GradientProblemSolver::Options::gradient_tolerance__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">gradient_tolerance</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options18gradient_toleranceE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">1e-10</span></code></p>
+<p>Solver terminates if</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="26" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="3"><mjx-c class="mjx-c3A0"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-n" size="s"><mjx-c class="mjx-c221E"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="4"><mjx-c class="mjx-c67"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c64"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi>x</mi><mo>−</mo><mi mathvariant="normal">Π</mi><mo>⊞</mo><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mo>−</mo><mi>g</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><msub><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi mathvariant="normal">∞</mi></msub><mo>≤</mo><mtext>gradient_tolerance</mtext></math></mjx-assistive-mml></mjx-container></div>
+<p>where <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="27" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-n" size="s"><mjx-c class="mjx-c221E"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mo>⋅</mo><msub><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi mathvariant="normal">∞</mi></msub></math></mjx-assistive-mml></mjx-container></span> refers to the max norm, <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="28" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c3A0"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Π</mi></math></mjx-assistive-mml></mjx-container></span>
+is projection onto the bounds constraints and <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="29" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c229E TEX-A"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⊞</mo></math></mjx-assistive-mml></mjx-container></span> is
+Plus operation for the manifold associated with the parameter
+vector.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options19parameter_toleranceE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options19parameter_toleranceE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options19parameter_toleranceE"></span><span id="ceres::GradientProblemSolver::Options::parameter_tolerance__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">parameter_tolerance</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options19parameter_toleranceE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">1e-8</span></code></p>
+<p>Solver terminates if</p>
+<div class="math notranslate nohighlight">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="30" style="font-size: 114.8%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2016"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c70"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c5F"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mo>≤</mo><mo stretchy="false">(</mo><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mi>x</mi><mo data-mjx-texclass="ORD" fence="false" stretchy="false">‖</mo><mo>+</mo><mtext>parameter_tolerance</mtext><mo stretchy="false">)</mo><mo>∗</mo><mtext>parameter_tolerance</mtext></math></mjx-assistive-mml></mjx-container></div>
+<p>where <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="31" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mi>x</mi></math></mjx-assistive-mml></mjx-container></span> is the step computed by the linear solver in
+the current iteration of the line search.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options12logging_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options12logging_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options12logging_typeE"></span><span id="ceres::GradientProblemSolver::Options::logging_type__LoggingType"></span><span class="n"><span class="pre">LoggingType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">logging_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options12logging_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">PER_MINIMIZER_ITERATION</span></code></p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options28minimizer_progress_to_stdoutE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options28minimizer_progress_to_stdoutE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options28minimizer_progress_to_stdoutE"></span><span id="ceres::GradientProblemSolver::Options::minimizer_progress_to_stdout__b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">minimizer_progress_to_stdout</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options28minimizer_progress_to_stdoutE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<p>By default the <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Minimizer</span></code> progress is logged to <code class="docutils literal notranslate"><span class="pre">STDERR</span></code>
+depending on the <code class="docutils literal notranslate"><span class="pre">vlog</span></code> level. If this flag is set to true, and
+<a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options12logging_typeE" title="ceres::GradientProblemSolver::Options::logging_type"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">GradientProblemSolver::Options::logging_type</span></code></a> is not
+<code class="docutils literal notranslate"><span class="pre">SILENT</span></code>, the logging output is sent to <code class="docutils literal notranslate"><span class="pre">STDOUT</span></code>.</p>
+<p>The progress display looks like</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0</span>: f: <span class="m">2</span>.317806e+05 d: <span class="m">0</span>.00e+00 g: <span class="m">3</span>.19e-01 h: <span class="m">0</span>.00e+00 s: <span class="m">0</span>.00e+00 e:  <span class="m">0</span> it: <span class="m">2</span>.98e-02 tt: <span class="m">8</span>.50e-02
+<span class="m">1</span>: f: <span class="m">2</span>.312019e+05 d: <span class="m">5</span>.79e+02 g: <span class="m">3</span>.18e-01 h: <span class="m">2</span>.41e+01 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.54e-02 tt: <span class="m">1</span>.31e-01
+<span class="m">2</span>: f: <span class="m">2</span>.300462e+05 d: <span class="m">1</span>.16e+03 g: <span class="m">3</span>.17e-01 h: <span class="m">4</span>.90e+01 s: <span class="m">2</span>.54e-03 e:  <span class="m">1</span> it: <span class="m">4</span>.96e-02 tt: <span class="m">1</span>.81e-01
+</pre></div>
+</div>
+<p>Here</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">f</span></code> is the value of the objective function.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> is the change in the value of the objective function if
+the step computed in this iteration is accepted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g</span></code> is the max norm of the gradient.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">h</span></code> is the change in the parameter vector.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code> is the optimal step length computed by the line search.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">it</span></code> is the time take by the current iteration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tt</span></code> is the total time taken by the minimizer.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Options9callbacksE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Options9callbacksE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Options9callbacksE"></span><span id="ceres::GradientProblemSolver::Options::callbacks__vector:IterationCallback:"></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="nnls_solving.html#_CPPv4N5ceres17IterationCallbackE" title="ceres::IterationCallback"><span class="n"><span class="pre">IterationCallback</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7OptionsE" title="ceres::GradientProblemSolver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">callbacks</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Options9callbacksE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Callbacks that are executed at the end of each iteration of the
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Minimizer</span></code>. They are executed in the order that they are
+specified in this vector. By default, parameter blocks are updated
+only at the end of the optimization, i.e., when the
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Minimizer</span></code> terminates. This behavior is controlled by
+<code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">GradientProblemSolver::Options::update_state_every_variable</span></code>. If
+the user wishes to have access to the update parameter blocks when
+his/her callbacks are executed, then set
+<code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">GradientProblemSolver::Options::update_state_every_iteration</span></code>
+to true.</p>
+<p>The solver does NOT take ownership of these pointers.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres6Solver7Options28update_state_every_iterationE">
+<span id="_CPPv3N5ceres6Solver7Options28update_state_every_iterationE"></span><span id="_CPPv2N5ceres6Solver7Options28update_state_every_iterationE"></span><span id="ceres::Solver::Options::update_state_every_iteration__b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">Solver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_solving.html#_CPPv4N5ceres6Solver7OptionsE" title="ceres::Solver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">update_state_every_iteration</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres6Solver7Options28update_state_every_iterationE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<p>Normally the parameter vector is only updated when the solver
+terminates. Setting this to true updates it every iteration. This
+setting is useful when building an interactive application using
+Ceres and using an <a class="reference internal" href="nnls_solving.html#_CPPv4N5ceres17IterationCallbackE" title="ceres::IterationCallback"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">IterationCallback</span></code></a>.</p>
+</dd></dl>
+
+</section>
+<section id="gradientproblemsolver-summary">
+<h3><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Summary</span></code></a><a class="headerlink" href="gradient_solver.html#gradientproblemsolver-summary" title="Permalink to this headline">¶</a></h3>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7SummaryE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7SummaryE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7SummaryE"></span><span id="ceres::GradientProblemSolver::Summary"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Summary</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Summary of the various stages of the solver after termination.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5ceres21GradientProblemSolver7Summary11BriefReportEv">
+<span id="_CPPv3NK5ceres21GradientProblemSolver7Summary11BriefReportEv"></span><span id="_CPPv2NK5ceres21GradientProblemSolver7Summary11BriefReportEv"></span><span id="ceres::GradientProblemSolver::Summary::BriefReportC"></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">BriefReport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="gradient_solver.html#_CPPv4NK5ceres21GradientProblemSolver7Summary11BriefReportEv" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>A brief one line description of the state of the solver after
+termination.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5ceres21GradientProblemSolver7Summary10FullReportEv">
+<span id="_CPPv3NK5ceres21GradientProblemSolver7Summary10FullReportEv"></span><span id="_CPPv2NK5ceres21GradientProblemSolver7Summary10FullReportEv"></span><span id="ceres::GradientProblemSolver::Summary::FullReportC"></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FullReport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="gradient_solver.html#_CPPv4NK5ceres21GradientProblemSolver7Summary10FullReportEv" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>A full multiline description of the state of the solver after
+termination.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5ceres21GradientProblemSolver7Summary16IsSolutionUsableEv">
+<span id="_CPPv3NK5ceres21GradientProblemSolver7Summary16IsSolutionUsableEv"></span><span id="_CPPv2NK5ceres21GradientProblemSolver7Summary16IsSolutionUsableEv"></span><span id="ceres::GradientProblemSolver::Summary::IsSolutionUsableC"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">IsSolutionUsable</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="gradient_solver.html#_CPPv4NK5ceres21GradientProblemSolver7Summary16IsSolutionUsableEv" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Whether the solution returned by the optimization algorithm can be
+relied on to be numerically sane. This will be the case if
+<cite>GradientProblemSolver::Summary:termination_type</cite> is set to <cite>CONVERGENCE</cite>,
+<cite>USER_SUCCESS</cite> or <cite>NO_CONVERGENCE</cite>, i.e., either the solver
+converged by meeting one of the convergence tolerances or because
+the user indicated that it had converged or it ran to the maximum
+number of iterations or time.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary16termination_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary16termination_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary16termination_typeE"></span><span id="ceres::GradientProblemSolver::Summary::termination_type__TerminationType"></span><span class="n"><span class="pre">TerminationType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">termination_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary16termination_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>The cause of the minimizer terminating.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary7messageE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary7messageE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary7messageE"></span><span id="ceres::GradientProblemSolver::Summary::message__string"></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">message</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary7messageE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Reason why the solver terminated.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary12initial_costE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary12initial_costE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary12initial_costE"></span><span id="ceres::GradientProblemSolver::Summary::initial_cost__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">initial_cost</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary12initial_costE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Cost of the problem (value of the objective function) before the
+optimization.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary10final_costE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary10final_costE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary10final_costE"></span><span id="ceres::GradientProblemSolver::Summary::final_cost__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">final_cost</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary10final_costE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Cost of the problem (value of the objective function) after the
+optimization.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary10iterationsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary10iterationsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary10iterationsE"></span><span id="ceres::GradientProblemSolver::Summary::iterations__vector:IterationSummary:"></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="nnls_solving.html#_CPPv4N5ceres16IterationSummaryE" title="ceres::IterationSummary"><span class="n"><span class="pre">IterationSummary</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">iterations</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary10iterationsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p><a class="reference internal" href="nnls_solving.html#_CPPv4N5ceres16IterationSummaryE" title="ceres::IterationSummary"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">IterationSummary</span></code></a> for each minimizer iteration in order.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres20num_cost_evaluationsE">
+<span id="_CPPv3N5ceres20num_cost_evaluationsE"></span><span id="_CPPv2N5ceres20num_cost_evaluationsE"></span><span id="ceres::num_cost_evaluations__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">num_cost_evaluations</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres20num_cost_evaluationsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Number of times the cost (and not the gradient) was evaluated.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres24num_gradient_evaluationsE">
+<span id="_CPPv3N5ceres24num_gradient_evaluationsE"></span><span id="_CPPv2N5ceres24num_gradient_evaluationsE"></span><span id="ceres::num_gradient_evaluations__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">num_gradient_evaluations</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres24num_gradient_evaluationsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Number of times the gradient (and the cost) were evaluated.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary21total_time_in_secondsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary21total_time_in_secondsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary21total_time_in_secondsE"></span><span id="ceres::GradientProblemSolver::Summary::total_time_in_seconds__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">total_time_in_seconds</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary21total_time_in_secondsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Time (in seconds) spent in the solver.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary31cost_evaluation_time_in_secondsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary31cost_evaluation_time_in_secondsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary31cost_evaluation_time_in_secondsE"></span><span id="ceres::GradientProblemSolver::Summary::cost_evaluation_time_in_seconds__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">cost_evaluation_time_in_seconds</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary31cost_evaluation_time_in_secondsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Time (in seconds) spent evaluating the cost vector.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary35gradient_evaluation_time_in_secondsE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary35gradient_evaluation_time_in_secondsE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary35gradient_evaluation_time_in_secondsE"></span><span id="ceres::GradientProblemSolver::Summary::gradient_evaluation_time_in_seconds__double"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">gradient_evaluation_time_in_seconds</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary35gradient_evaluation_time_in_secondsE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Time (in seconds) spent evaluating the gradient vector.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary14num_parametersE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary14num_parametersE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary14num_parametersE"></span><span id="ceres::GradientProblemSolver::Summary::num_parameters__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">num_parameters</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary14num_parametersE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Number of parameters in the problem.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary20num_local_parametersE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary20num_local_parametersE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary20num_local_parametersE"></span><span id="ceres::GradientProblemSolver::Summary::num_local_parameters__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">num_local_parameters</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary20num_local_parametersE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Dimension of the tangent space of the problem. This is different
+from <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary14num_parametersE" title="ceres::GradientProblemSolver::Summary::num_parameters"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">GradientProblemSolver::Summary::num_parameters</span></code></a> if a
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a>/<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> object is used.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">num_local_parameters</span></code> is deprecated and will be removed in
+Ceres Solver version 2.2.0. Please use <code class="docutils literal notranslate"><span class="pre">num_tangent_parameters</span></code>
+instead.</p>
+</div>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary22num_tangent_parametersE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary22num_tangent_parametersE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary22num_tangent_parametersE"></span><span id="ceres::GradientProblemSolver::Summary::num_tangent_parameters__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">num_tangent_parameters</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary22num_tangent_parametersE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Dimension of the tangent space of the problem. This is different
+from <a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary14num_parametersE" title="ceres::GradientProblemSolver::Summary::num_parameters"><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">GradientProblemSolver::Summary::num_parameters</span></code></a> if a
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a>/<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> object is used.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary26line_search_direction_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary26line_search_direction_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary26line_search_direction_typeE"></span><span id="ceres::GradientProblemSolver::Summary::line_search_direction_type__LineSearchDirectionType"></span><span class="n"><span class="pre">LineSearchDirectionType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_direction_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary26line_search_direction_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Type of line search direction used.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary16line_search_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary16line_search_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary16line_search_typeE"></span><span id="ceres::GradientProblemSolver::Summary::line_search_type__LineSearchType"></span><span class="n"><span class="pre">LineSearchType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary16line_search_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Type of the line search algorithm used.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary30line_search_interpolation_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary30line_search_interpolation_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary30line_search_interpolation_typeE"></span><span id="ceres::GradientProblemSolver::Summary::line_search_interpolation_type__LineSearchInterpolationType"></span><span class="n"><span class="pre">LineSearchInterpolationType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">line_search_interpolation_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary30line_search_interpolation_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>When performing line search, the degree of the polynomial used to
+approximate the objective function.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary33nonlinear_conjugate_gradient_typeE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary33nonlinear_conjugate_gradient_typeE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary33nonlinear_conjugate_gradient_typeE"></span><span id="ceres::GradientProblemSolver::Summary::nonlinear_conjugate_gradient_type__NonlinearConjugateGradientType"></span><span class="n"><span class="pre">NonlinearConjugateGradientType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">nonlinear_conjugate_gradient_type</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary33nonlinear_conjugate_gradient_typeE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>If the line search direction is <cite>NONLINEAR_CONJUGATE_GRADIENT</cite>,
+then this indicates the particular variant of non-linear conjugate
+gradient used.</p>
+</dd></dl>
+
+<dl class="cpp member">
+<dt class="sig sig-object cpp" id="_CPPv4N5ceres21GradientProblemSolver7Summary14max_lbfgs_rankE">
+<span id="_CPPv3N5ceres21GradientProblemSolver7Summary14max_lbfgs_rankE"></span><span id="_CPPv2N5ceres21GradientProblemSolver7Summary14max_lbfgs_rankE"></span><span id="ceres::GradientProblemSolver::Summary::max_lbfgs_rank__i"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">GradientProblemSolver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7SummaryE" title="ceres::GradientProblemSolver::Summary"><span class="n"><span class="pre">Summary</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">max_lbfgs_rank</span></span></span><a class="headerlink" href="gradient_solver.html#_CPPv4N5ceres21GradientProblemSolver7Summary14max_lbfgs_rankE" title="Permalink to this definition">¶</a><br></dt>
+<dd><p>If the type of the line search direction is <cite>LBFGS</cite>, then this
+indicates the rank of the Hessian approximation.</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nnls_covariance.html" class="btn btn-neutral float-left" title="Covariance Estimation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faqs.html" class="btn btn-neutral float-right" title="FAQS, Tips &amp; Tricks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>© Copyright 2022 Google Inc.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-49769510-1', 'ceres-solver.org');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body><div style="all: initial;"><div id="__hcfy__" style="all: initial;"></div></div><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>

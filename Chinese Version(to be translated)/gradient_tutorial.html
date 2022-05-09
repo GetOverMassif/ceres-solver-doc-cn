@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)gradient_tutorial.html -->
+<html class="writer-html5" lang="en"><script async="" src="./gradient_tutorial_files/analytics.js"></script><script>
+    (function() {
+    class RuffleMimeType {
+        constructor(a, b, c) {
+            this.type = a, this.description = b, this.suffixes = c
+        }
+    }
+    class RuffleMimeTypeArray {
+        constructor(a) {
+            this.__mimetypes = [], this.__named_mimetypes = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__mimetypes.length;
+            this.__mimetypes.push(a), this.__named_mimetypes[a.type] = a, this[a.type] = a, this[b] = a
+        }
+        item(a) {
+            return this.__mimetypes[a]
+        }
+        namedItem(a) {
+            return this.__named_mimetypes[a]
+        }
+        get length() {
+            return this.__mimetypes.length
+        }
+    }
+    class RufflePlugin extends RuffleMimeTypeArray {
+        constructor(a, b, c, d) {
+            super(d), this.name = a, this.description = b, this.filename = c
+        }
+        install(a) {
+            a.enabledPlugin || (a.enabledPlugin = this), super.install(a)
+        }
+    }
+    class RufflePluginArray {
+        constructor(a) {
+            this.__plugins = [], this.__named_plugins = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__plugins.length;
+            this.__plugins.push(a), this.__named_plugins[a.name] = a, this[a.name] = a, this[b] = a
+        }
+        item(a) {
+            return this.__plugins[a]
+        }
+        namedItem(a) {
+            return this.__named_plugins[a]
+        }
+        get length() {
+            return this.__plugins.length
+        }
+    }
+    const FLASH_PLUGIN = new RufflePlugin("Shockwave Flash", "Shockwave Flash 32.0 r0", "ruffle.js", [new RuffleMimeType("application/futuresplash", "Shockwave Flash", "spl"), new RuffleMimeType("application/x-shockwave-flash", "Shockwave Flash", "swf"), new RuffleMimeType("application/x-shockwave-flash2-preview", "Shockwave Flash", "swf"), new RuffleMimeType("application/vnd.adobe.flash-movie", "Shockwave Flash", "swf")]);
+
+    function install_plugin(a) {
+        navigator.plugins.install || Object.defineProperty(navigator, "plugins", {
+            value: new RufflePluginArray(navigator.plugins),
+            writable: !1
+        }), navigator.plugins.install(a), 0 < a.length && !navigator.mimeTypes.install && Object.defineProperty(navigator, "mimeTypes", {
+            value: new RuffleMimeTypeArray(navigator.mimeTypes),
+            writable: !1
+        });
+        for (var b = 0; b < a.length; b += 1) navigator.mimeTypes.install(a[b])
+    }
+    install_plugin(FLASH_PLUGIN);
+})();
+</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>General Unconstrained Minimization — Ceres Solver</title>
+      <link rel="stylesheet" href="./gradient_tutorial_files/pygments.css" type="text/css">
+      <link rel="stylesheet" href="./gradient_tutorial_files/theme.css" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="./gradient_tutorial_files/documentation_options.js"></script>
+        <script src="./gradient_tutorial_files/jquery.js"></script>
+        <script src="./gradient_tutorial_files/underscore.js"></script>
+        <script src="./gradient_tutorial_files/doctools.js"></script>
+    <script src="./gradient_tutorial_files/theme.js"></script>
+    <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
+    <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
+    <link rel="next" title="On Derivatives" href="derivatives.html">
+    <link rel="prev" title="Non-linear Least Squares" href="nnls_tutorial.html"> 
+<style>hcfy-result.__hcfy__result__loaded__.__hcfy__result__both__{border: 1px dotted}</style></head>
+
+<body class="wy-body-for-nav vsc-initialized" data-new-gr-c-s-check-loaded="14.1013.0" data-gr-ext-installed=""> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="index.html" class="icon icon-home"> Ceres Solver
+          </a>
+              <div class="version">
+                2.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="http://ceres-solver.org/search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current" aria-expanded="true">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal" href="tutorial.html"><button class="toctree-expand" title="Open/close menu"></button>Tutorial</a><ul class="" aria-expanded="false">
+<li class="toctree-l2"><a class="reference internal" href="nnls_tutorial.html">Non-linear Least Squares</a></li>
+<li class="toctree-l2 current" aria-expanded="true"><a class="reference internal current" href="gradient_tutorial.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>General Unconstrained Minimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gradient_tutorial.html#rosenbrock-s-function">Rosenbrock’s Function</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="derivatives.html">On Derivatives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">General Unconstrained Minimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ceres Solver</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> »</li>
+          <li><a href="tutorial.html">Tutorial</a> »</li>
+      <li>General Unconstrained Minimization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="general-unconstrained-minimization">
+<span id="chapter-gradient-tutorial"></span><h1>General Unconstrained Minimization<a class="headerlink" href="gradient_tutorial.html#general-unconstrained-minimization" title="Permalink to this headline">¶</a></h1>
+<p>Ceres Solver besides being able to solve non-linear least squares
+problem can also solve general unconstrained problems using just their
+objective function value and gradients. In this chapter we will see
+how to do this.</p>
+<section id="rosenbrock-s-function">
+<h2>Rosenbrock’s Function<a class="headerlink" href="gradient_tutorial.html#rosenbrock-s-function" title="Permalink to this headline">¶</a></h2>
+<p>Consider minimizing the famous <a class="reference external" href="http://en.wikipedia.org/wiki/Rosenbrock_function">Rosenbrock’s function</a> <a class="footnote-reference brackets" href="gradient_tutorial.html#f1" id="id2">1</a>.</p>
+<p>The simplest way to minimize is to define a templated functor to
+evaluate the objective value of this function and then use Ceres
+Solver’s automatic differentiation to compute its derivatives.</p>
+<p>We begin by defining a templated functor and then using
+<code class="docutils literal notranslate"><span class="pre">AutoDiffFirstOrderFunction</span></code> to construct an instance of the
+<code class="docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code> interface. This is the object that is
+responsible for computing the objective function value and the
+gradient (if required). This is the analog of the
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code> when defining non-linear least squares problems
+in Ceres.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// f(x,y) = (1-x)^2 + 100(y - x^2)^2;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Rosenbrock</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="p">()(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">cost</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">ceres</span><span class="o">::</span><span class="n">FirstOrderFunction</span><span class="o">*</span><span class="w"> </span><span class="n">Create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">kNumParameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ceres</span><span class="o">::</span><span class="n">AutoDiffFirstOrderFunction</span><span class="o">&lt;</span><span class="n">Rosenbrock</span><span class="p">,</span><span class="w"> </span><span class="n">kNumParameters</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">Rosenbrock</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Minimizing it then is a straightforward matter of constructing a
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code> object and calling <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Solve()</span></code> on it.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="n">parameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">-1.2</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">};</span><span class="w"></span>
+
+<span class="n">ceres</span><span class="o">::</span><span class="n">GradientProblem</span><span class="w"> </span><span class="nf">problem</span><span class="p">(</span><span class="n">Rosenbrock</span><span class="o">::</span><span class="n">Create</span><span class="p">());</span><span class="w"></span>
+
+<span class="n">ceres</span><span class="o">::</span><span class="n">GradientProblemSolver</span><span class="o">::</span><span class="n">Options</span><span class="w"> </span><span class="n">options</span><span class="p">;</span><span class="w"></span>
+<span class="n">options</span><span class="p">.</span><span class="n">minimizer_progress_to_stdout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="n">ceres</span><span class="o">::</span><span class="n">GradientProblemSolver</span><span class="o">::</span><span class="n">Summary</span><span class="w"> </span><span class="n">summary</span><span class="p">;</span><span class="w"></span>
+<span class="n">ceres</span><span class="o">::</span><span class="n">Solve</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">summary</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">summary</span><span class="p">.</span><span class="n">FullReport</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Executing this code results, solve the problem using limited memory
+<a class="reference external" href="http://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">BFGS</a>
+algorithm.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>   <span class="m">0</span>: f: <span class="m">2</span>.420000e+01 d: <span class="m">0</span>.00e+00 g: <span class="m">2</span>.16e+02 h: <span class="m">0</span>.00e+00 s: <span class="m">0</span>.00e+00 e:  <span class="m">0</span> it: <span class="m">2</span>.29e-05 tt: <span class="m">2</span>.29e-05
+   <span class="m">1</span>: f: <span class="m">4</span>.280493e+00 d: <span class="m">1</span>.99e+01 g: <span class="m">1</span>.52e+01 h: <span class="m">2</span>.01e-01 s: <span class="m">8</span>.62e-04 e:  <span class="m">2</span> it: <span class="m">8</span>.39e-05 tt: <span class="m">1</span>.62e-04
+   <span class="m">2</span>: f: <span class="m">3</span>.571154e+00 d: <span class="m">7</span>.09e-01 g: <span class="m">1</span>.35e+01 h: <span class="m">3</span>.78e-01 s: <span class="m">1</span>.34e-01 e:  <span class="m">3</span> it: <span class="m">2</span>.22e-05 tt: <span class="m">1</span>.91e-04
+   <span class="m">3</span>: f: <span class="m">3</span>.440869e+00 d: <span class="m">1</span>.30e-01 g: <span class="m">1</span>.73e+01 h: <span class="m">1</span>.36e-01 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">5</span>.01e-06 tt: <span class="m">2</span>.01e-04
+   <span class="m">4</span>: f: <span class="m">3</span>.213597e+00 d: <span class="m">2</span>.27e-01 g: <span class="m">1</span>.55e+01 h: <span class="m">1</span>.06e-01 s: <span class="m">4</span>.59e-01 e:  <span class="m">1</span> it: <span class="m">3</span>.81e-06 tt: <span class="m">2</span>.10e-04
+   <span class="m">5</span>: f: <span class="m">2</span>.839723e+00 d: <span class="m">3</span>.74e-01 g: <span class="m">1</span>.05e+01 h: <span class="m">1</span>.34e-01 s: <span class="m">5</span>.24e-01 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">2</span>.19e-04
+   <span class="m">6</span>: f: <span class="m">2</span>.448490e+00 d: <span class="m">3</span>.91e-01 g: <span class="m">1</span>.29e+01 h: <span class="m">3</span>.04e-01 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">5</span>.01e-06 tt: <span class="m">2</span>.28e-04
+   <span class="m">7</span>: f: <span class="m">1</span>.943019e+00 d: <span class="m">5</span>.05e-01 g: <span class="m">4</span>.00e+00 h: <span class="m">8</span>.81e-02 s: <span class="m">7</span>.43e-01 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">2</span>.36e-04
+   <span class="m">8</span>: f: <span class="m">1</span>.731469e+00 d: <span class="m">2</span>.12e-01 g: <span class="m">7</span>.36e+00 h: <span class="m">1</span>.71e-01 s: <span class="m">4</span>.60e-01 e:  <span class="m">2</span> it: <span class="m">1</span>.22e-05 tt: <span class="m">2</span>.52e-04
+   <span class="m">9</span>: f: <span class="m">1</span>.503267e+00 d: <span class="m">2</span>.28e-01 g: <span class="m">6</span>.47e+00 h: <span class="m">8</span>.66e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">5</span>.96e-06 tt: <span class="m">2</span>.66e-04
+  <span class="m">10</span>: f: <span class="m">1</span>.228331e+00 d: <span class="m">2</span>.75e-01 g: <span class="m">2</span>.00e+00 h: <span class="m">7</span>.70e-02 s: <span class="m">7</span>.90e-01 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">2</span>.75e-04
+  <span class="m">11</span>: f: <span class="m">1</span>.016523e+00 d: <span class="m">2</span>.12e-01 g: <span class="m">5</span>.15e+00 h: <span class="m">1</span>.39e-01 s: <span class="m">3</span>.76e-01 e:  <span class="m">2</span> it: <span class="m">9</span>.06e-06 tt: <span class="m">2</span>.88e-04
+  <span class="m">12</span>: f: <span class="m">9</span>.145773e-01 d: <span class="m">1</span>.02e-01 g: <span class="m">6</span>.74e+00 h: <span class="m">7</span>.98e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">5</span>.01e-06 tt: <span class="m">2</span>.97e-04
+  <span class="m">13</span>: f: <span class="m">7</span>.508302e-01 d: <span class="m">1</span>.64e-01 g: <span class="m">3</span>.88e+00 h: <span class="m">5</span>.76e-02 s: <span class="m">4</span>.93e-01 e:  <span class="m">1</span> it: <span class="m">5</span>.01e-06 tt: <span class="m">3</span>.05e-04
+  <span class="m">14</span>: f: <span class="m">5</span>.832378e-01 d: <span class="m">1</span>.68e-01 g: <span class="m">5</span>.56e+00 h: <span class="m">1</span>.42e-01 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.77e-06 tt: <span class="m">3</span>.13e-04
+  <span class="m">15</span>: f: <span class="m">3</span>.969581e-01 d: <span class="m">1</span>.86e-01 g: <span class="m">1</span>.64e+00 h: <span class="m">1</span>.17e-01 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">3</span>.20e-04
+  <span class="m">16</span>: f: <span class="m">3</span>.171557e-01 d: <span class="m">7</span>.98e-02 g: <span class="m">3</span>.84e+00 h: <span class="m">1</span>.18e-01 s: <span class="m">3</span>.97e-01 e:  <span class="m">2</span> it: <span class="m">8</span>.82e-06 tt: <span class="m">3</span>.33e-04
+  <span class="m">17</span>: f: <span class="m">2</span>.641257e-01 d: <span class="m">5</span>.30e-02 g: <span class="m">3</span>.27e+00 h: <span class="m">6</span>.14e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">3</span>.42e-04
+  <span class="m">18</span>: f: <span class="m">1</span>.909730e-01 d: <span class="m">7</span>.32e-02 g: <span class="m">5</span>.29e-01 h: <span class="m">8</span>.55e-02 s: <span class="m">6</span>.82e-01 e:  <span class="m">1</span> it: <span class="m">1</span>.00e-05 tt: <span class="m">4</span>.64e-04
+  <span class="m">19</span>: f: <span class="m">1</span>.472012e-01 d: <span class="m">4</span>.38e-02 g: <span class="m">3</span>.11e+00 h: <span class="m">1</span>.20e-01 s: <span class="m">3</span>.47e-01 e:  <span class="m">2</span> it: <span class="m">1</span>.29e-05 tt: <span class="m">4</span>.87e-04
+  <span class="m">20</span>: f: <span class="m">1</span>.093558e-01 d: <span class="m">3</span>.78e-02 g: <span class="m">2</span>.97e+00 h: <span class="m">8</span>.43e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">5</span>.01e-06 tt: <span class="m">4</span>.97e-04
+  <span class="m">21</span>: f: <span class="m">6</span>.710346e-02 d: <span class="m">4</span>.23e-02 g: <span class="m">1</span>.42e+00 h: <span class="m">9</span>.64e-02 s: <span class="m">8</span>.85e-01 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">5</span>.06e-04
+  <span class="m">22</span>: f: <span class="m">3</span>.993377e-02 d: <span class="m">2</span>.72e-02 g: <span class="m">2</span>.30e+00 h: <span class="m">1</span>.29e-01 s: <span class="m">4</span>.63e-01 e:  <span class="m">2</span> it: <span class="m">1</span>.00e-05 tt: <span class="m">5</span>.25e-04
+  <span class="m">23</span>: f: <span class="m">2</span>.911794e-02 d: <span class="m">1</span>.08e-02 g: <span class="m">2</span>.55e+00 h: <span class="m">6</span>.55e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">5</span>.01e-06 tt: <span class="m">5</span>.34e-04
+  <span class="m">24</span>: f: <span class="m">1</span>.457683e-02 d: <span class="m">1</span>.45e-02 g: <span class="m">2</span>.77e-01 h: <span class="m">6</span>.37e-02 s: <span class="m">6</span>.14e-01 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">5</span>.42e-04
+  <span class="m">25</span>: f: <span class="m">8</span>.577515e-03 d: <span class="m">6</span>.00e-03 g: <span class="m">2</span>.86e+00 h: <span class="m">1</span>.40e-01 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">3</span>.81e-06 tt: <span class="m">5</span>.49e-04
+  <span class="m">26</span>: f: <span class="m">3</span>.486574e-03 d: <span class="m">5</span>.09e-03 g: <span class="m">1</span>.76e-01 h: <span class="m">1</span>.23e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">5</span>.57e-04
+  <span class="m">27</span>: f: <span class="m">1</span>.257570e-03 d: <span class="m">2</span>.23e-03 g: <span class="m">1</span>.39e-01 h: <span class="m">5</span>.08e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">3</span>.81e-06 tt: <span class="m">5</span>.65e-04
+  <span class="m">28</span>: f: <span class="m">2</span>.783568e-04 d: <span class="m">9</span>.79e-04 g: <span class="m">6</span>.20e-01 h: <span class="m">6</span>.47e-02 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">5</span>.73e-04
+  <span class="m">29</span>: f: <span class="m">2</span>.533399e-05 d: <span class="m">2</span>.53e-04 g: <span class="m">1</span>.68e-02 h: <span class="m">1</span>.98e-03 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">5</span>.81e-04
+  <span class="m">30</span>: f: <span class="m">7</span>.591572e-07 d: <span class="m">2</span>.46e-05 g: <span class="m">5</span>.40e-03 h: <span class="m">9</span>.27e-03 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">5</span>.96e-06 tt: <span class="m">6</span>.30e-04
+  <span class="m">31</span>: f: <span class="m">1</span>.902460e-09 d: <span class="m">7</span>.57e-07 g: <span class="m">1</span>.62e-03 h: <span class="m">1</span>.89e-03 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">6</span>.39e-04
+  <span class="m">32</span>: f: <span class="m">1</span>.003030e-12 d: <span class="m">1</span>.90e-09 g: <span class="m">3</span>.50e-05 h: <span class="m">3</span>.52e-05 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">3</span>.81e-06 tt: <span class="m">6</span>.47e-04
+  <span class="m">33</span>: f: <span class="m">4</span>.835994e-17 d: <span class="m">1</span>.00e-12 g: <span class="m">1</span>.05e-07 h: <span class="m">1</span>.13e-06 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">6</span>.59e-04
+  <span class="m">34</span>: f: <span class="m">1</span>.885250e-22 d: <span class="m">4</span>.84e-17 g: <span class="m">2</span>.69e-10 h: <span class="m">1</span>.45e-08 s: <span class="m">1</span>.00e+00 e:  <span class="m">1</span> it: <span class="m">4</span>.05e-06 tt: <span class="m">6</span>.67e-04
+
+Solver Summary <span class="o">(</span>v <span class="m">2</span>.1.0-eigen-<span class="o">(</span><span class="m">3</span>.4.0<span class="o">)</span>-lapack-suitesparse-<span class="o">(</span><span class="m">5</span>.10.1<span class="o">)</span>-cxsparse-<span class="o">(</span><span class="m">3</span>.2.0<span class="o">)</span>-acceleratesparse-eigensparse-no_openmp<span class="o">)</span>
+
+Parameters                                  <span class="m">2</span>
+Line search direction              LBFGS <span class="o">(</span><span class="m">20</span><span class="o">)</span>
+Line search <span class="nb">type</span>                  CUBIC WOLFE
+
+
+Cost:
+Initial                          <span class="m">2</span>.420000e+01
+Final                            <span class="m">1</span>.955192e-27
+Change                           <span class="m">2</span>.420000e+01
+
+Minimizer iterations                       <span class="m">36</span>
+
+Time <span class="o">(</span><span class="k">in</span> seconds<span class="o">)</span>:
+
+  Cost evaluation                    <span class="m">0</span>.000000 <span class="o">(</span><span class="m">0</span><span class="o">)</span>
+  Gradient <span class="p">&amp;</span> cost evaluation         <span class="m">0</span>.000005 <span class="o">(</span><span class="m">44</span><span class="o">)</span>
+  Polynomial minimization            <span class="m">0</span>.000041
+Total                                <span class="m">0</span>.000368
+
+Termination:                      CONVERGENCE <span class="o">(</span>Parameter tolerance reached. Relative step_norm: <span class="m">1</span>.890726e-11 &lt;<span class="o">=</span> <span class="m">1</span>.000000e-08.<span class="o">)</span>
+
+Initial x: -1.2 y: <span class="m">1</span>
+Final   x: <span class="m">1</span> y: <span class="m">1</span>
+</pre></div>
+</div>
+<p>If you are unable to use automatic differentiation for some reason
+(say beacause you need to call an external library), then you can
+use numeric differentiation. In that case the functor is defined as
+follows <a class="footnote-reference brackets" href="gradient_tutorial.html#f2" id="id3">2</a>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// f(x,y) = (1-x)^2 + 100(y - x^2)^2;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Rosenbrock</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">operator</span><span class="p">()(</span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">cost</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">ceres</span><span class="o">::</span><span class="n">FirstOrderFunction</span><span class="o">*</span><span class="w"> </span><span class="nf">Create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">kNumParameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ceres</span><span class="o">::</span><span class="n">NumericDiffFirstOrderFunction</span><span class="o">&lt;</span><span class="n">Rosenbrock</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                                    </span><span class="n">ceres</span><span class="o">::</span><span class="n">CENTRAL</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                                    </span><span class="n">kNumParameters</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">Rosenbrock</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+</pre></div>
+</div>
+<p>And finally, if you would rather compute the derivatives by hand (say
+because the size of the parameter vector is too large to be
+automatically differentiated). Then you should define an instance of
+<cite>FirstOrderFunction</cite>, which is the analog of <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code> for
+non-linear least squares problems <a class="footnote-reference brackets" href="gradient_tutorial.html#f3" id="id4">3</a>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// f(x,y) = (1-x)^2 + 100(y - x^2)^2;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Rosenbrock</span><span class="w"> </span><span class="k">final</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">ceres</span><span class="o">::</span><span class="n">FirstOrderFunction</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">~</span><span class="n">Rosenbrock</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">Evaluate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">parameters</span><span class="p">,</span><span class="w"></span>
+<span class="w">                           </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">cost</span><span class="p">,</span><span class="w"></span>
+<span class="w">                           </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">gradient</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">       </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"></span>
+<span class="w">       </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+
+<span class="w">       </span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">gradient</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="n">gradient</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">200.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="n">gradient</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">200.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<span class="w">       </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">NumParameters</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+</pre></div>
+</div>
+<p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="gradient_tutorial.html#id2">1</a></span></dt>
+<dd><p><a class="reference external" href="https://ceres-solver.googlesource.com/ceres-solver/+/master/examples/rosenbrock.cc">examples/rosenbrock.cc</a></p>
+</dd>
+<dt class="label" id="f2"><span class="brackets"><a class="fn-backref" href="gradient_tutorial.html#id3">2</a></span></dt>
+<dd><p><a class="reference external" href="https://ceres-solver.googlesource.com/ceres-solver/+/master/examples/rosenbrock_numeric_diff.cc">examples/rosenbrock_numeric_diff.cc</a></p>
+</dd>
+<dt class="label" id="f3"><span class="brackets"><a class="fn-backref" href="gradient_tutorial.html#id4">3</a></span></dt>
+<dd><p><a class="reference external" href="https://ceres-solver.googlesource.com/ceres-solver/+/master/examples/rosenbrock_analytic_diff.cc">examples/rosenbrock_analytic_diff.cc</a></p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nnls_tutorial.html" class="btn btn-neutral float-left" title="Non-linear Least Squares" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="derivatives.html" class="btn btn-neutral float-right" title="On Derivatives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>© Copyright 2022 Google Inc.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-49769510-1', 'ceres-solver.org');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body><div style="all: initial;"><div id="__hcfy__" style="all: initial;"></div></div><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>

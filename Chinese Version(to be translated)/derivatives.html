@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)derivatives.html -->
+<html class="writer-html5" lang="en"><script async="" src="./derivatives_files/analytics.js"></script><script>
+    (function() {
+    class RuffleMimeType {
+        constructor(a, b, c) {
+            this.type = a, this.description = b, this.suffixes = c
+        }
+    }
+    class RuffleMimeTypeArray {
+        constructor(a) {
+            this.__mimetypes = [], this.__named_mimetypes = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__mimetypes.length;
+            this.__mimetypes.push(a), this.__named_mimetypes[a.type] = a, this[a.type] = a, this[b] = a
+        }
+        item(a) {
+            return this.__mimetypes[a]
+        }
+        namedItem(a) {
+            return this.__named_mimetypes[a]
+        }
+        get length() {
+            return this.__mimetypes.length
+        }
+    }
+    class RufflePlugin extends RuffleMimeTypeArray {
+        constructor(a, b, c, d) {
+            super(d), this.name = a, this.description = b, this.filename = c
+        }
+        install(a) {
+            a.enabledPlugin || (a.enabledPlugin = this), super.install(a)
+        }
+    }
+    class RufflePluginArray {
+        constructor(a) {
+            this.__plugins = [], this.__named_plugins = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__plugins.length;
+            this.__plugins.push(a), this.__named_plugins[a.name] = a, this[a.name] = a, this[b] = a
+        }
+        item(a) {
+            return this.__plugins[a]
+        }
+        namedItem(a) {
+            return this.__named_plugins[a]
+        }
+        get length() {
+            return this.__plugins.length
+        }
+    }
+    const FLASH_PLUGIN = new RufflePlugin("Shockwave Flash", "Shockwave Flash 32.0 r0", "ruffle.js", [new RuffleMimeType("application/futuresplash", "Shockwave Flash", "spl"), new RuffleMimeType("application/x-shockwave-flash", "Shockwave Flash", "swf"), new RuffleMimeType("application/x-shockwave-flash2-preview", "Shockwave Flash", "swf"), new RuffleMimeType("application/vnd.adobe.flash-movie", "Shockwave Flash", "swf")]);
+
+    function install_plugin(a) {
+        navigator.plugins.install || Object.defineProperty(navigator, "plugins", {
+            value: new RufflePluginArray(navigator.plugins),
+            writable: !1
+        }), navigator.plugins.install(a), 0 < a.length && !navigator.mimeTypes.install && Object.defineProperty(navigator, "mimeTypes", {
+            value: new RuffleMimeTypeArray(navigator.mimeTypes),
+            writable: !1
+        });
+        for (var b = 0; b < a.length; b += 1) navigator.mimeTypes.install(a[b])
+    }
+    install_plugin(FLASH_PLUGIN);
+})();
+</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>On Derivatives — Ceres Solver</title>
+      <link rel="stylesheet" href="./derivatives_files/pygments.css" type="text/css">
+      <link rel="stylesheet" href="./derivatives_files/theme.css" type="text/css">
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="./derivatives_files/documentation_options.js"></script>
+        <script src="./derivatives_files/jquery.js"></script>
+        <script src="./derivatives_files/underscore.js"></script>
+        <script src="./derivatives_files/doctools.js"></script>
+    <script src="./derivatives_files/theme.js"></script>
+    <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
+    <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
+    <link rel="next" title="Spivak Notation" href="spivak_notation.html">
+    <link rel="prev" title="General Unconstrained Minimization" href="gradient_tutorial.html"> 
+<style>hcfy-result.__hcfy__result__loaded__.__hcfy__result__both__{border: 1px dotted}</style></head>
+
+<body class="wy-body-for-nav vsc-initialized" data-new-gr-c-s-check-loaded="14.1013.0" data-gr-ext-installed=""> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="index.html" class="icon icon-home"> Ceres Solver
+          </a>
+              <div class="version">
+                2.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="http://ceres-solver.org/search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current" aria-expanded="true">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="derivatives.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>On Derivatives</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spivak_notation.html">Spivak Notation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analytical_derivatives.html">Analytic Derivatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numerical_derivatives.html">Numeric derivatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="automatic_derivatives.html">Automatic Derivatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfacing_with_autodiff.html">Interfacing with Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">Using Inverse &amp; Implicit Function Theorems</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">General Unconstrained Minimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ceres Solver</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> »</li>
+      <li>On Derivatives</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="on-derivatives">
+<span id="chapter-on-derivatives"></span><h1>On Derivatives<a class="headerlink" href="derivatives.html#on-derivatives" title="Permalink to this headline">¶</a></h1>
+<p>Ceres Solver, like all gradient based optimization algorithms, depends
+on being able to evaluate the objective function and its derivatives
+at arbitrary points in its domain. Indeed, defining the objective
+function and its <a class="reference external" href="https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant">Jacobian</a> is
+the principal task that the user is required to perform when solving
+an optimization problem using Ceres Solver. The correct and efficient
+computation of the Jacobian is the key to good performance.</p>
+<p>Ceres Solver offers considerable flexibility in how the user can
+provide derivatives to the solver. She can use:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="analytical_derivatives.html#chapter-analytical-derivatives"><span class="std std-ref">Analytic Derivatives</span></a>: The user figures out the
+derivatives herself, by hand or using a tool like <a class="reference external" href="https://www.maplesoft.com/products/maple/">Maple</a> or <a class="reference external" href="https://www.wolfram.com/mathematica/">Mathematica</a>, and implements them in a
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunctionE" title="ceres::CostFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="numerical_derivatives.html#chapter-numerical-derivatives"><span class="std std-ref">Numeric derivatives</span></a>: Ceres numerically computes
+the derivative using finite differences.</p></li>
+<li><p><a class="reference internal" href="automatic_derivatives.html#chapter-automatic-derivatives"><span class="std std-ref">Automatic Derivatives</span></a>: Ceres automatically computes
+the analytic derivative using C++ templates and operator
+overloading.</p></li>
+</ol>
+<p>Which of these three approaches (alone or in combination) should be
+used depends on the situation and the tradeoffs the user is willing to
+make. Unfortunately, numerical optimization textbooks rarely discuss
+these issues in detail and the user is left to her own devices.</p>
+<p>The aim of this article is to fill this gap and describe each of these
+three approaches in the context of Ceres Solver with sufficient detail
+that the user can make an informed choice.</p>
+<p>For the impatient amongst you, here is some high level advice:</p>
+<ol class="arabic simple">
+<li><p>Use <a class="reference internal" href="automatic_derivatives.html#chapter-automatic-derivatives"><span class="std std-ref">Automatic Derivatives</span></a>.</p></li>
+<li><p>In some cases it maybe worth using
+<a class="reference internal" href="analytical_derivatives.html#chapter-analytical-derivatives"><span class="std std-ref">Analytic Derivatives</span></a>.</p></li>
+<li><p>Avoid <a class="reference internal" href="numerical_derivatives.html#chapter-numerical-derivatives"><span class="std std-ref">Numeric derivatives</span></a>. Use it as a measure of
+last resort, mostly to interface with external libraries.</p></li>
+</ol>
+<p>For the rest, read on.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="spivak_notation.html">Spivak Notation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analytical_derivatives.html">Analytic Derivatives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numerical_derivatives.html">Numeric derivatives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automatic_derivatives.html">Automatic Derivatives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfacing_with_autodiff.html">Interfacing with Automatic Differentiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">Using Inverse &amp; Implicit Function Theorems</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gradient_tutorial.html" class="btn btn-neutral float-left" title="General Unconstrained Minimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spivak_notation.html" class="btn btn-neutral float-right" title="Spivak Notation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>© Copyright 2022 Google Inc.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-49769510-1', 'ceres-solver.org');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body><div style="all: initial;"><div id="__hcfy__" style="all: initial;"></div></div><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
