@@ -71,7 +71,7 @@
   <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>On Derivatives — Ceres Solver</title>
+  <title>关于导数 — Ceres Solver</title>
       <link rel="stylesheet" href="./derivatives_files/pygments.css" type="text/css">
       <link rel="stylesheet" href="./derivatives_files/theme.css" type="text/css">
   <!--[if lt IE 9]>
@@ -85,8 +85,8 @@
     <script src="./derivatives_files/theme.js"></script>
     <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
     <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
-    <link rel="next" title="Spivak Notation" href="spivak_notation.html">
-    <link rel="prev" title="General Unconstrained Minimization" href="gradient_tutorial.html"> 
+    <link rel="next" title="Spivak 标记法" href="spivak_notation.html">
+    <link rel="prev" title="一般无约束最小化" href="gradient_tutorial.html"> 
 <style>hcfy-result.__hcfy__result__loaded__.__hcfy__result__both__{border: 1px dotted}</style></head>
 
 <body class="wy-body-for-nav vsc-initialized" data-new-gr-c-s-check-loaded="14.1013.0" data-gr-ext-installed=""> 
@@ -108,27 +108,27 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current" aria-expanded="true">
-<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="derivatives.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>On Derivatives</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="spivak_notation.html">Spivak Notation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="analytical_derivatives.html">Analytic Derivatives</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numerical_derivatives.html">Numeric derivatives</a></li>
-<li class="toctree-l2"><a class="reference internal" href="automatic_derivatives.html">Automatic Derivatives</a></li>
-<li class="toctree-l2"><a class="reference internal" href="interfacing_with_autodiff.html">Interfacing with Automatic Differentiation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">Using Inverse &amp; Implicit Function Theorems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">为什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">教程</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="derivatives.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>关于导数</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spivak_notation.html">Spivak 标记法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analytical_derivatives.html">解析导数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numerical_derivatives.html">数值导数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="automatic_derivatives.html">自动导数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfacing_with_autodiff.html">与自动微分的接口</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">使用反函数和隐函数理论</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">General Unconstrained Minimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">非线性最小二乘的建模</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">非线性最小二乘的求解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">协方差估计</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">一般无约束最小化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">常见问题，提示和技巧</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">使用者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">版本历史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">参考数目</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -146,7 +146,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> »</li>
-      <li>On Derivatives</li>
+      <li>关于导数</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -156,7 +156,7 @@
            <div itemprop="articleBody">
              
   <section id="on-derivatives">
-<span id="chapter-on-derivatives"></span><h1>On Derivatives<a class="headerlink" href="derivatives.html#on-derivatives" title="Permalink to this headline">¶</a></h1>
+<span id="chapter-on-derivatives"></span><h1>关于导数<a class="headerlink" href="derivatives.html#on-derivatives" title="Permalink to this headline">¶</a></h1>
 <p>Ceres Solver, like all gradient based optimization algorithms, depends
 on being able to evaluate the objective function and its derivatives
 at arbitrary points in its domain. Indeed, defining the objective
@@ -167,12 +167,12 @@ computation of the Jacobian is the key to good performance.</p>
 <p>Ceres Solver offers considerable flexibility in how the user can
 provide derivatives to the solver. She can use:</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="analytical_derivatives.html#chapter-analytical-derivatives"><span class="std std-ref">Analytic Derivatives</span></a>: The user figures out the
+<li><p><a class="reference internal" href="analytical_derivatives.html#chapter-analytical-derivatives"><span class="std std-ref">解析导数</span></a>: The user figures out the
 derivatives herself, by hand or using a tool like <a class="reference external" href="https://www.maplesoft.com/products/maple/">Maple</a> or <a class="reference external" href="https://www.wolfram.com/mathematica/">Mathematica</a>, and implements them in a
 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunctionE" title="ceres::CostFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a>.</p></li>
-<li><p><a class="reference internal" href="numerical_derivatives.html#chapter-numerical-derivatives"><span class="std std-ref">Numeric derivatives</span></a>: Ceres numerically computes
+<li><p><a class="reference internal" href="numerical_derivatives.html#chapter-numerical-derivatives"><span class="std std-ref">数值导数</span></a>: Ceres numerically computes
 the derivative using finite differences.</p></li>
-<li><p><a class="reference internal" href="automatic_derivatives.html#chapter-automatic-derivatives"><span class="std std-ref">Automatic Derivatives</span></a>: Ceres automatically computes
+<li><p><a class="reference internal" href="automatic_derivatives.html#chapter-automatic-derivatives"><span class="std std-ref">自动导数</span></a>: Ceres automatically computes
 the analytic derivative using C++ templates and operator
 overloading.</p></li>
 </ol>
@@ -185,21 +185,21 @@ three approaches in the context of Ceres Solver with sufficient detail
 that the user can make an informed choice.</p>
 <p>For the impatient amongst you, here is some high level advice:</p>
 <ol class="arabic simple">
-<li><p>Use <a class="reference internal" href="automatic_derivatives.html#chapter-automatic-derivatives"><span class="std std-ref">Automatic Derivatives</span></a>.</p></li>
+<li><p>Use <a class="reference internal" href="automatic_derivatives.html#chapter-automatic-derivatives"><span class="std std-ref">自动导数</span></a>.</p></li>
 <li><p>In some cases it maybe worth using
-<a class="reference internal" href="analytical_derivatives.html#chapter-analytical-derivatives"><span class="std std-ref">Analytic Derivatives</span></a>.</p></li>
-<li><p>Avoid <a class="reference internal" href="numerical_derivatives.html#chapter-numerical-derivatives"><span class="std std-ref">Numeric derivatives</span></a>. Use it as a measure of
+<a class="reference internal" href="analytical_derivatives.html#chapter-analytical-derivatives"><span class="std std-ref">解析导数</span></a>.</p></li>
+<li><p>Avoid <a class="reference internal" href="numerical_derivatives.html#chapter-numerical-derivatives"><span class="std std-ref">数值导数</span></a>. Use it as a measure of
 last resort, mostly to interface with external libraries.</p></li>
 </ol>
 <p>For the rest, read on.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="spivak_notation.html">Spivak Notation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analytical_derivatives.html">Analytic Derivatives</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numerical_derivatives.html">Numeric derivatives</a></li>
-<li class="toctree-l1"><a class="reference internal" href="automatic_derivatives.html">Automatic Derivatives</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interfacing_with_autodiff.html">Interfacing with Automatic Differentiation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">Using Inverse &amp; Implicit Function Theorems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spivak_notation.html">Spivak 标记法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analytical_derivatives.html">解析导数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numerical_derivatives.html">数值导数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automatic_derivatives.html">自动导数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfacing_with_autodiff.html">与自动微分的接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">使用反函数和隐函数理论</a></li>
 </ul>
 </div>
 </section>
@@ -208,8 +208,8 @@ last resort, mostly to interface with external libraries.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="gradient_tutorial.html" class="btn btn-neutral float-left" title="General Unconstrained Minimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="spivak_notation.html" class="btn btn-neutral float-right" title="Spivak Notation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gradient_tutorial.html" class="btn btn-neutral float-left" title="一般无约束最小化" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spivak_notation.html" class="btn btn-neutral float-right" title="Spivak 标记法" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr>

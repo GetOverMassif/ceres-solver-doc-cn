@@ -71,7 +71,7 @@
   <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modeling Non-linear Least Squares — Ceres Solver</title>
+  <title>非线性最小二乘的建模 — Ceres Solver</title>
       <link rel="stylesheet" href="./nnls_modeling_files/pygments.css" type="text/css">
       <link rel="stylesheet" href="./nnls_modeling_files/theme.css" type="text/css">
   <!--[if lt IE 9]>
@@ -87,8 +87,8 @@
     <script src="./nnls_modeling_files/theme.js"></script>
     <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
     <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
-    <link rel="next" title="Solving Non-linear Least Squares" href="nnls_solving.html">
-    <link rel="prev" title="Using Inverse &amp; Implicit Function Theorems" href="inverse_and_implicit_function_theorems.html"> 
+    <link rel="next" title="非线性最小二乘的求解" href="nnls_solving.html">
+    <link rel="prev" title="使用反函数和隐函数理论" href="inverse_and_implicit_function_theorems.html"> 
 <style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
 .CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
 .CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
@@ -1703,12 +1703,12 @@ mjx-c.mjx-c79::before {
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current" aria-expanded="true">
-<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="derivatives.html">On Derivatives</a></li>
-<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="nnls_modeling.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>Modeling Non-linear Least Squares</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">为什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivatives.html">关于导数</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="nnls_modeling.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>非线性最小二乘的建模</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#introduction">引言</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#costfunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#sizedcostfunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">SizedCostFunction</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#autodiffcostfunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">AutoDiffCostFunction</span></code></a></li>
@@ -1753,17 +1753,17 @@ mjx-c.mjx-c79::before {
 <li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#evaluationcallback"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#rotation-h"><code class="docutils literal notranslate"><span class="pre">rotation.h</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#cubic-interpolation">Cubic Interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_modeling.html#cubic-interpolation">三次插值</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">General Unconstrained Minimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">非线性最小二乘的求解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">协方差估计</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">一般无约束最小化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">常见问题，提示和技巧</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">使用者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">版本历史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">参考数目</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -1781,7 +1781,7 @@ mjx-c.mjx-c79::before {
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> »</li>
-      <li>Modeling Non-linear Least Squares</li>
+      <li>非线性最小二乘的建模</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1791,14 +1791,14 @@ mjx-c.mjx-c79::before {
            <div itemprop="articleBody">
              
   <section id="modeling-non-linear-least-squares">
-<span id="chapter-nnls-modeling"></span><h1>Modeling Non-linear Least Squares<a class="headerlink" href="nnls_modeling.html#modeling-non-linear-least-squares" title="Permalink to this headline">¶</a></h1>
+<span id="chapter-nnls-modeling"></span><h1>非线性最小二乘的建模<a class="headerlink" href="nnls_modeling.html#modeling-non-linear-least-squares" title="Permalink to this headline">¶</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="nnls_modeling.html#introduction" title="Permalink to this headline">¶</a></h2>
+<h2>引言<a class="headerlink" href="nnls_modeling.html#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Ceres solver consists of two distinct parts. A modeling API which
 provides a rich set of tools to construct an optimization problem one
 term at a time and a solver API that controls the minimization
 algorithm. This chapter is devoted to the task of modeling
-optimization problems using Ceres. <a class="reference internal" href="nnls_solving.html#chapter-nnls-solving"><span class="std std-ref">Solving Non-linear Least Squares</span></a> discusses
+optimization problems using Ceres. <a class="reference internal" href="nnls_solving.html#chapter-nnls-solving"><span class="std std-ref">非线性最小二乘的求解</span></a> discusses
 the various ways in which an optimization problem can be solved using
 Ceres.</p>
 <p>Ceres solves robustified bounds constrained non-linear least squares
@@ -4646,7 +4646,7 @@ cost function evaluation, and subsequent calls from Ceres to the
 actual cost functions merely copy the results from the GPU onto the
 corresponding blocks for Ceres to plug into the solver.</p>
 <p><strong>Note</strong>: Ceres provides no mechanism to share data other than the
-notification from the callback. Users must provide access to
+notification from the callback. 使用者 must provide access to
 pre-computed shared data to their cost functions behind the scenes;
 this all happens without Ceres knowing. One approach is to put a
 pointer to the shared data in each cost function (recommended) or
@@ -4811,7 +4811,7 @@ It does assume that the norm is non-zero.</p>
 
 </section>
 <section id="cubic-interpolation">
-<h2>Cubic Interpolation<a class="headerlink" href="nnls_modeling.html#cubic-interpolation" title="Permalink to this headline">¶</a></h2>
+<h2>三次插值<a class="headerlink" href="nnls_modeling.html#cubic-interpolation" title="Permalink to this headline">¶</a></h2>
 <p>Optimization problems often involve functions that are given in the
 form of a table of values, for example an image. Evaluating these
 functions and their derivatives requires interpolating these
@@ -4914,8 +4914,8 @@ numeric type as input, as long as it can be safely cast to double.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="inverse_and_implicit_function_theorems.html" class="btn btn-neutral float-left" title="Using Inverse &amp; Implicit Function Theorems" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="nnls_solving.html" class="btn btn-neutral float-right" title="Solving Non-linear Least Squares" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="inverse_and_implicit_function_theorems.html" class="btn btn-neutral float-left" title="使用反函数和隐函数理论" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nnls_solving.html" class="btn btn-neutral float-right" title="非线性最小二乘的求解" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr>

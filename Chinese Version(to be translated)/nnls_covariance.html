@@ -71,7 +71,7 @@
   <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Covariance Estimation — Ceres Solver</title>
+  <title>协方差估计 — Ceres Solver</title>
       <link rel="stylesheet" href="./nnls_covariance_files/pygments.css" type="text/css">
       <link rel="stylesheet" href="./nnls_covariance_files/theme.css" type="text/css">
   <!--[if lt IE 9]>
@@ -87,8 +87,8 @@
     <script src="./nnls_covariance_files/theme.js"></script>
     <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
     <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
-    <link rel="next" title="General Unconstrained Minimization" href="gradient_solver.html">
-    <link rel="prev" title="Solving Non-linear Least Squares" href="nnls_solving.html"> 
+    <link rel="next" title="一般无约束最小化" href="gradient_solver.html">
+    <link rel="prev" title="非线性最小二乘的求解" href="nnls_solving.html"> 
 <style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
 .CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
 .CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
@@ -1321,26 +1321,26 @@ mjx-c.mjx-c2211.TEX-S2::before {
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current" aria-expanded="true">
-<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="derivatives.html">On Derivatives</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
-<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="nnls_covariance.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>Covariance Estimation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#gauge-invariance">Gauge Invariance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#covariance"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Covariance</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#rank-of-the-jacobian">Rank of the Jacobian</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#example-usage">Example Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">为什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivatives.html">关于导数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">非线性最小二乘的建模</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">非线性最小二乘的求解</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="nnls_covariance.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>协方差估计</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#introduction">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#gauge-invariance">规范不变性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#covariance">协方差 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Covariance</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#rank-of-the-jacobian">雅可比的秩</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_covariance.html#example-usage">示例用法</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">General Unconstrained Minimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">一般无约束最小化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">常见问题，提示和技巧</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">使用者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">版本历史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">参考数目</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -1358,7 +1358,7 @@ mjx-c.mjx-c2211.TEX-S2::before {
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> »</li>
-      <li>Covariance Estimation</li>
+      <li>协方差估计</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1368,9 +1368,9 @@ mjx-c.mjx-c2211.TEX-S2::before {
            <div itemprop="articleBody">
              
   <section id="covariance-estimation">
-<span id="chapter-nnls-covariance"></span><h1>Covariance Estimation<a class="headerlink" href="nnls_covariance.html#covariance-estimation" title="Permalink to this headline">¶</a></h1>
+<span id="chapter-nnls-covariance"></span><h1>协方差估计<a class="headerlink" href="nnls_covariance.html#covariance-estimation" title="Permalink to this headline">¶</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="nnls_covariance.html#introduction" title="Permalink to this headline">¶</a></h2>
+<h2>引言<a class="headerlink" href="nnls_covariance.html#introduction" title="Permalink to this headline">¶</a></h2>
 <p>One way to assess the quality of the solution returned by a non-linear
 least squares solver is to analyze the covariance of the solution.</p>
 <p>Let us consider the non-linear regression problem</p>
@@ -1414,7 +1414,7 @@ where <span class="math notranslate nohighlight"><mjx-container class="MathJax C
 matrix <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="26" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>S</mi></math></mjx-assistive-mml></mjx-container></span>.</p>
 </section>
 <section id="gauge-invariance">
-<h2>Gauge Invariance<a class="headerlink" href="nnls_covariance.html#gauge-invariance" title="Permalink to this headline">¶</a></h2>
+<h2>规范不变性<a class="headerlink" href="nnls_covariance.html#gauge-invariance" title="Permalink to this headline">¶</a></h2>
 <p>In structure from motion (3D reconstruction) problems, the
 reconstruction is ambiguous up to a similarity transform. This is
 known as a <em>Gauge Ambiguity</em>. Handling Gauges correctly requires the
@@ -1438,7 +1438,7 @@ is interested in and then uses this information to only compute and
 store those parts of the covariance matrix.</p>
 </section>
 <section id="rank-of-the-jacobian">
-<h2>Rank of the Jacobian<a class="headerlink" href="nnls_covariance.html#rank-of-the-jacobian" title="Permalink to this headline">¶</a></h2>
+<h2>雅可比的秩<a class="headerlink" href="nnls_covariance.html#rank-of-the-jacobian" title="Permalink to this headline">¶</a></h2>
 <p>As we noted above, if the Jacobian is rank deficient, then the inverse
 of <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="27" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.054em;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo></mjx-script></mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>J</mi><mo data-mjx-alternate="1">′</mo></msup><mi>J</mi></math></mjx-assistive-mml></mjx-container></span> is not defined and instead a pseudo inverse needs to be
 computed.</p>
@@ -1673,7 +1673,7 @@ returned covariance will be a row-major matrix.</p>
 
 </section>
 <section id="example-usage">
-<h2>Example Usage<a class="headerlink" href="nnls_covariance.html#example-usage" title="Permalink to this headline">¶</a></h2>
+<h2>示例用法<a class="headerlink" href="nnls_covariance.html#example-usage" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w"></span>
 <span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w"></span>
 
@@ -1708,8 +1708,8 @@ returned covariance will be a row-major matrix.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="nnls_solving.html" class="btn btn-neutral float-left" title="Solving Non-linear Least Squares" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="gradient_solver.html" class="btn btn-neutral float-right" title="General Unconstrained Minimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nnls_solving.html" class="btn btn-neutral float-left" title="非线性最小二乘的求解" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gradient_solver.html" class="btn btn-neutral float-right" title="一般无约束最小化" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr>

@@ -71,7 +71,7 @@
   <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>General Unconstrained Minimization — Ceres Solver</title>
+  <title>一般无约束最小化 — Ceres Solver</title>
       <link rel="stylesheet" href="./gradient_solver_files/pygments.css" type="text/css">
       <link rel="stylesheet" href="./gradient_solver_files/theme.css" type="text/css">
   <!--[if lt IE 9]>
@@ -87,8 +87,8 @@
     <script src="./gradient_solver_files/theme.js"></script>
     <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
     <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
-    <link rel="next" title="FAQS, Tips &amp; Tricks" href="faqs.html">
-    <link rel="prev" title="Covariance Estimation" href="nnls_covariance.html"> 
+    <link rel="next" title="常见问题，提示和技巧" href="faqs.html">
+    <link rel="prev" title="协方差估计" href="nnls_covariance.html"> 
 <style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
 .CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
 .CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
@@ -1079,31 +1079,31 @@ mjx-c.mjx-c67::before {
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current" aria-expanded="true">
-<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="derivatives.html">On Derivatives</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
-<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="gradient_solver.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>General Unconstrained Minimization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gradient_solver.html#modeling"><button class="toctree-expand" title="Open/close menu"></button>Modeling</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">为什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivatives.html">关于导数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">非线性最小二乘的建模</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">非线性最小二乘的求解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">协方差估计</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="gradient_solver.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>一般无约束最小化</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gradient_solver.html#modeling"><button class="toctree-expand" title="Open/close menu"></button>建模</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#firstorderfunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">FirstOrderFunction</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblem">梯度问题 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblem</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="gradient_solver.html#solving"><button class="toctree-expand" title="Open/close menu"></button>Solving</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblemsolver-options"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Options</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblemsolver-summary"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Summary</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient_solver.html#solving"><button class="toctree-expand" title="Open/close menu"></button>求解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblemsolver-options">梯度问题求解器选项 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Options</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gradient_solver.html#gradientproblemsolver-summary">梯度问题求解结果汇总 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">GradientProblemSolver::Summary</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">常见问题，提示和技巧</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">使用者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">版本历史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">参考数目</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -1121,7 +1121,7 @@ mjx-c.mjx-c67::before {
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> »</li>
-      <li>General Unconstrained Minimization</li>
+      <li>一般无约束最小化</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1131,7 +1131,7 @@ mjx-c.mjx-c67::before {
            <div itemprop="articleBody">
              
   <section id="general-unconstrained-minimization">
-<span id="chapter-gradient-problem-solver"></span><h1>General Unconstrained Minimization<a class="headerlink" href="gradient_solver.html#general-unconstrained-minimization" title="Permalink to this headline">¶</a></h1>
+<span id="chapter-gradient-problem-solver"></span><h1>一般无约束最小化<a class="headerlink" href="gradient_solver.html#general-unconstrained-minimization" title="Permalink to this headline">¶</a></h1>
 <section id="modeling">
 <h2>Modeling<a class="headerlink" href="gradient_solver.html#modeling" title="Permalink to this headline">¶</a></h2>
 <section id="firstorderfunction">
@@ -1729,8 +1729,8 @@ indicates the rank of the Hessian approximation.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="nnls_covariance.html" class="btn btn-neutral float-left" title="Covariance Estimation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="faqs.html" class="btn btn-neutral float-right" title="FAQS, Tips &amp; Tricks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nnls_covariance.html" class="btn btn-neutral float-left" title="协方差估计" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faqs.html" class="btn btn-neutral float-right" title="常见问题，提示和技巧" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr>

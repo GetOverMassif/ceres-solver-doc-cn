@@ -71,7 +71,7 @@
   <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Automatic Derivatives — Ceres Solver</title>
+  <title>自动导数 — Ceres Solver</title>
       <link rel="stylesheet" href="./automatic_derivatives_files/pygments.css" type="text/css">
       <link rel="stylesheet" href="./automatic_derivatives_files/theme.css" type="text/css">
   <!--[if lt IE 9]>
@@ -87,8 +87,8 @@
     <script src="./automatic_derivatives_files/theme.js"></script>
     <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
     <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
-    <link rel="next" title="Interfacing with Automatic Differentiation" href="interfacing_with_autodiff.html">
-    <link rel="prev" title="Numeric derivatives" href="numerical_derivatives.html"> 
+    <link rel="next" title="与自动微分的接口" href="interfacing_with_autodiff.html">
+    <link rel="prev" title="数值导数" href="numerical_derivatives.html"> 
 <style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
 .CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
 .CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
@@ -1186,14 +1186,14 @@ mjx-c.mjx-c221A.TEX-S2::before {
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current" aria-expanded="true">
-<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal" href="derivatives.html"><button class="toctree-expand" title="Open/close menu"></button>On Derivatives</a><ul class="" aria-expanded="false">
-<li class="toctree-l2"><a class="reference internal" href="spivak_notation.html">Spivak Notation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="analytical_derivatives.html">Analytic Derivatives</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numerical_derivatives.html">Numeric derivatives</a></li>
-<li class="toctree-l2 current" aria-expanded="true"><a class="reference internal current" href="automatic_derivatives.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>Automatic Derivatives</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">为什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">教程</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal" href="derivatives.html"><button class="toctree-expand" title="Open/close menu"></button>关于导数</a><ul class="" aria-expanded="false">
+<li class="toctree-l2"><a class="reference internal" href="spivak_notation.html">Spivak 标记法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analytical_derivatives.html">解析导数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numerical_derivatives.html">数值导数</a></li>
+<li class="toctree-l2 current" aria-expanded="true"><a class="reference internal current" href="automatic_derivatives.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>自动导数</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="automatic_derivatives.html#dual-numbers-jets"><button class="toctree-expand" title="Open/close menu"></button>Dual Numbers &amp; Jets</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="automatic_derivatives.html#implementing-jets">Implementing Jets</a></li>
 </ul>
@@ -1201,19 +1201,19 @@ mjx-c.mjx-c221A.TEX-S2::before {
 <li class="toctree-l3"><a class="reference internal" href="automatic_derivatives.html#pitfalls">Pitfalls</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="interfacing_with_autodiff.html">Interfacing with Automatic Differentiation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">Using Inverse &amp; Implicit Function Theorems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfacing_with_autodiff.html">与自动微分的接口</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inverse_and_implicit_function_theorems.html">使用反函数和隐函数理论</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">Solving Non-linear Least Squares</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">General Unconstrained Minimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">非线性最小二乘的建模</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_solving.html">非线性最小二乘的求解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">协方差估计</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">一般无约束最小化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">常见问题，提示和技巧</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">使用者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">版本历史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">参考数目</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -1231,8 +1231,8 @@ mjx-c.mjx-c221A.TEX-S2::before {
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> »</li>
-          <li><a href="derivatives.html">On Derivatives</a> »</li>
-      <li>Automatic Derivatives</li>
+          <li><a href="derivatives.html">关于导数</a> »</li>
+      <li>自动导数</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1242,7 +1242,7 @@ mjx-c.mjx-c221A.TEX-S2::before {
            <div itemprop="articleBody">
              
   <section id="automatic-derivatives">
-<span id="chapter-automatic-derivatives"></span><h1>Automatic Derivatives<a class="headerlink" href="automatic_derivatives.html#automatic-derivatives" title="Permalink to this headline">¶</a></h1>
+<span id="chapter-automatic-derivatives"></span><h1>自动导数<a class="headerlink" href="automatic_derivatives.html#automatic-derivatives" title="Permalink to this headline">¶</a></h1>
 <p>We will now consider automatic differentiation. It is a technique that
 can compute exact derivatives, fast, while requiring about the same
 effort from the user as is needed to use numerical differentiation.</p>
@@ -1501,8 +1501,8 @@ these points.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="numerical_derivatives.html" class="btn btn-neutral float-left" title="Numeric derivatives" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="interfacing_with_autodiff.html" class="btn btn-neutral float-right" title="Interfacing with Automatic Differentiation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="numerical_derivatives.html" class="btn btn-neutral float-left" title="数值导数" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="interfacing_with_autodiff.html" class="btn btn-neutral float-right" title="与自动微分的接口" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr>

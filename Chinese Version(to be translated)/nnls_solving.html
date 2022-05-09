@@ -71,7 +71,7 @@
   <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Solving Non-linear Least Squares — Ceres Solver</title>
+  <title>非线性最小二乘的求解 — Ceres Solver</title>
       <link rel="stylesheet" href="./nnls_solving_files/pygments.css" type="text/css">
       <link rel="stylesheet" href="./nnls_solving_files/theme.css" type="text/css">
   <!--[if lt IE 9]>
@@ -87,8 +87,8 @@
     <script src="./nnls_solving_files/theme.js"></script>
     <link rel="index" title="Index" href="http://ceres-solver.org/genindex.html">
     <link rel="search" title="Search" href="http://ceres-solver.org/search.html">
-    <link rel="next" title="Covariance Estimation" href="nnls_covariance.html">
-    <link rel="prev" title="Modeling Non-linear Least Squares" href="nnls_modeling.html"> 
+    <link rel="next" title="协方差估计" href="nnls_covariance.html">
+    <link rel="prev" title="非线性最小二乘的建模" href="nnls_modeling.html"> 
 <style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
 .CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
 .CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
@@ -1656,22 +1656,22 @@ mjx-c.mjx-c39::before {
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current" aria-expanded="true">
-<li class="toctree-l1"><a class="reference internal" href="features.html">Why?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="derivatives.html">On Derivatives</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">Modeling Non-linear Least Squares</a></li>
-<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="nnls_solving.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>Solving Non-linear Least Squares</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#trust-region-methods"><button class="toctree-expand" title="Open/close menu"></button>Trust Region Methods</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">为什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="derivatives.html">关于导数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_modeling.html">非线性最小二乘的建模</a></li>
+<li class="toctree-l1 current" aria-expanded="true"><a class="reference internal current" href="nnls_solving.html#" aria-expanded="true"><button class="toctree-expand" title="Open/close menu"></button>非线性最小二乘的求解</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#introduction">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#trust-region-methods"><button class="toctree-expand" title="Open/close menu"></button>信赖域方法</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#levenberg-marquardt">Levenberg-Marquardt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#dogleg">Dogleg</a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#inner-iterations">Inner Iterations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#non-monotonic-steps">Non-monotonic Steps</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#line-search-methods">Line Search Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#linearsolver"><button class="toctree-expand" title="Open/close menu"></button>LinearSolver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#line-search-methods">线搜索方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#linearsolver"><button class="toctree-expand" title="Open/close menu"></button>线性求解器</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#dense-qr"><code class="docutils literal notranslate"><span class="pre">DENSE_QR</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#dense-normal-cholesky-sparse-normal-cholesky"><code class="docutils literal notranslate"><span class="pre">DENSE_NORMAL_CHOLESKY</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">SPARSE_NORMAL_CHOLESKY</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#cgnr"><code class="docutils literal notranslate"><span class="pre">CGNR</span></code></a></li>
@@ -1679,29 +1679,29 @@ mjx-c.mjx-c39::before {
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#iterative-schur"><code class="docutils literal notranslate"><span class="pre">ITERATIVE_SCHUR</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#preconditioner"><button class="toctree-expand" title="Open/close menu"></button>Preconditioner</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#preconditioner"><button class="toctree-expand" title="Open/close menu"></button>预调节器</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#jacobi"><code class="docutils literal notranslate"><span class="pre">JACOBI</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#schur-jacobi"><code class="docutils literal notranslate"><span class="pre">SCHUR_JACOBI</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#cluster-jacobi-and-cluster-tridiagonal"><code class="docutils literal notranslate"><span class="pre">CLUSTER_JACOBI</span></code> and <code class="docutils literal notranslate"><span class="pre">CLUSTER_TRIDIAGONAL</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nnls_solving.html#subset"><code class="docutils literal notranslate"><span class="pre">SUBSET</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#ordering">Ordering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#solver-options"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Solver::Options</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#parameterblockordering"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">ParameterBlockOrdering</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#iterationsummary"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">IterationSummary</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#iterationcallback"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">IterationCallback</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#crsmatrix"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CRSMatrix</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#solver-summary"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Solver::Summary</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#ordering">排序</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#solver-options">求解器选项 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Solver::Options</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#parameterblockordering">参数块排序 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">ParameterBlockOrdering</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#iterationsummary">迭代结果汇总 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">IterationSummary</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#iterationcallback">迭代回调 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">IterationCallback</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#crsmatrix">压缩行稀疏矩阵 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CRSMatrix</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="nnls_solving.html#solver-summary">求解器结果汇总 <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Solver::Summary</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">Covariance Estimation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">General Unconstrained Minimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">FAQS, Tips &amp; Tricks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnls_covariance.html">协方差估计</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_solver.html">一般无约束最小化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">常见问题，提示和技巧</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.html">使用者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">版本历史</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">参考数目</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -1719,7 +1719,7 @@ mjx-c.mjx-c39::before {
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> »</li>
-      <li>Solving Non-linear Least Squares</li>
+      <li>非线性最小二乘的求解</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1729,9 +1729,9 @@ mjx-c.mjx-c39::before {
            <div itemprop="articleBody">
              
   <section id="solving-non-linear-least-squares">
-<span id="chapter-nnls-solving"></span><h1>Solving Non-linear Least Squares<a class="headerlink" href="nnls_solving.html#solving-non-linear-least-squares" title="Permalink to this headline">¶</a></h1>
+<span id="chapter-nnls-solving"></span><h1>非线性最小二乘的求解<a class="headerlink" href="nnls_solving.html#solving-non-linear-least-squares" title="Permalink to this headline">¶</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="nnls_solving.html#introduction" title="Permalink to this headline">¶</a></h2>
+<h2>引言<a class="headerlink" href="nnls_solving.html#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Effective use of Ceres requires some familiarity with the basic
 components of a non-linear least squares solver, so before we describe
 how to configure and use the solver, we will take a brief look at how
@@ -1788,7 +1788,7 @@ choose a step direction and then a step size. Ceres implements
 multiple algorithms in both categories.</p>
 </section>
 <section id="trust-region-methods">
-<span id="section-trust-region-methods"></span><h2>Trust Region Methods<a class="headerlink" href="nnls_solving.html#trust-region-methods" title="Permalink to this headline">¶</a></h2>
+<span id="section-trust-region-methods"></span><h2>信赖域方法<a class="headerlink" href="nnls_solving.html#trust-region-methods" title="Permalink to this headline">¶</a></h2>
 <p>The basic trust region algorithm looks something like this.</p>
 <blockquote>
 <div><ol class="arabic">
@@ -1983,7 +1983,7 @@ possible is highly recommended.</p>
 <section id="non-monotonic-steps">
 <span id="section-non-monotonic-steps"></span><h3>Non-monotonic Steps<a class="headerlink" href="nnls_solving.html#non-monotonic-steps" title="Permalink to this headline">¶</a></h3>
 <p>Note that the basic trust-region algorithm described in
-<a class="reference internal" href="nnls_solving.html#section-trust-region-methods"><span class="std std-ref">Trust Region Methods</span></a> is a descent algorithm in that it
+<a class="reference internal" href="nnls_solving.html#section-trust-region-methods"><span class="std std-ref">信赖域方法</span></a> is a descent algorithm in that it
 only accepts a point if it strictly reduces the value of the objective
 function.</p>
 <p>Relaxing this requirement allows the algorithm to be more efficient in
@@ -2005,7 +2005,7 @@ region strategies.</p>
 </section>
 </section>
 <section id="line-search-methods">
-<span id="section-line-search-methods"></span><h2>Line Search Methods<a class="headerlink" href="nnls_solving.html#line-search-methods" title="Permalink to this headline">¶</a></h2>
+<span id="section-line-search-methods"></span><h2>线搜索方法<a class="headerlink" href="nnls_solving.html#line-search-methods" title="Permalink to this headline">¶</a></h2>
 <p>The line search method in Ceres Solver cannot handle bounds
 constraints right now, so it can only be used for solving
 unconstrained problems.</p>
@@ -2060,7 +2060,7 @@ However, note that in order for the assumptions underlying the
 Wolfe line search algorithm should be used.</p>
 </section>
 <section id="linearsolver">
-<span id="section-linear-solver"></span><h2>LinearSolver<a class="headerlink" href="nnls_solving.html#linearsolver" title="Permalink to this headline">¶</a></h2>
+<span id="section-linear-solver"></span><h2>线性求解器<a class="headerlink" href="nnls_solving.html#linearsolver" title="Permalink to this headline">¶</a></h2>
 <p>Recall that in both of the trust-region methods described above, the
 key computational cost is the solution of a linear least squares
 problem of the form</p>
@@ -2119,7 +2119,7 @@ forming the normal equations explicitly. It exploits the relation</p>
 <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="122" style="font-size: 114.5%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msup space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.054em;"><mjx-mi class="mjx-n" size="s"><mjx-c class="mjx-c22A4"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43D TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msup space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.054em;"><mjx-mi class="mjx-n" size="s"><mjx-c class="mjx-c22A4"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43D TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>H</mi><mi>x</mi><mo>=</mo><msup><mi>J</mi><mi mathvariant="normal">⊤</mi></msup><mi>J</mi><mi>x</mi><mo>=</mo><msup><mi>J</mi><mi mathvariant="normal">⊤</mi></msup><mo stretchy="false">(</mo><mi>J</mi><mi>x</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></div>
 <p>The convergence of Conjugate Gradients depends on the conditioner
 number <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="123" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D705 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>κ</mi><mo stretchy="false">(</mo><mi>H</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>. Usually <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="124" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container></span> is poorly conditioned and
-a <a class="reference internal" href="nnls_solving.html#section-preconditioner"><span class="std std-ref">Preconditioner</span></a> must be used to get reasonable
+a <a class="reference internal" href="nnls_solving.html#section-preconditioner"><span class="std std-ref">预调节器</span></a> must be used to get reasonable
 performance. Currently only the <code class="docutils literal notranslate"><span class="pre">JACOBI</span></code> preconditioner is available
 for use with <code class="docutils literal notranslate"><span class="pre">CGNR</span></code>. It uses the block diagonal of <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="125" style="font-size: 114.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container></span> to
 precondition the normal equations.</p>
@@ -2268,7 +2268,7 @@ natural consequence of performing computations in finite arithmetic.</p>
 </section>
 </section>
 <section id="preconditioner">
-<span id="section-preconditioner"></span><h2>Preconditioner<a class="headerlink" href="nnls_solving.html#preconditioner" title="Permalink to this headline">¶</a></h2>
+<span id="section-preconditioner"></span><h2>预调节器<a class="headerlink" href="nnls_solving.html#preconditioner" title="Permalink to this headline">¶</a></h2>
 <p>The convergence rate of Conjugate Gradients for
 solving <a class="reference internal" href="nnls_solving.html#equation-normal">(8)</a> depends on the distribution of eigenvalues
 of <span class="math notranslate nohighlight"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="196" style="font-size: 114.8%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container></span> <a class="reference internal" href="bibliography.html#saad" id="id33"><span>[Saad]</span></a>. A useful upper bound is
@@ -2372,7 +2372,7 @@ residual blocks approximate the full problem.</p>
 </section>
 </section>
 <section id="ordering">
-<span id="section-ordering"></span><h2>Ordering<a class="headerlink" href="nnls_solving.html#ordering" title="Permalink to this headline">¶</a></h2>
+<span id="section-ordering"></span><h2>排序<a class="headerlink" href="nnls_solving.html#ordering" title="Permalink to this headline">¶</a></h2>
 <p>The order in which variables are eliminated in a linear solver can
 have a significant of impact on the efficiency and accuracy of the
 method. For example when doing sparse Cholesky factorization, there
@@ -2451,8 +2451,8 @@ success. If there is a problem, the method returns false with
 <span id="_CPPv3N5ceres6Solver7Options14minimizer_typeE"></span><span id="_CPPv2N5ceres6Solver7Options14minimizer_typeE"></span><span id="ceres::Solver::Options::minimizer_type__MinimizerType"></span><span class="n"><span class="pre">MinimizerType</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">Solver</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_solving.html#_CPPv4N5ceres6Solver7OptionsE" title="ceres::Solver::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">minimizer_type</span></span></span><a class="headerlink" href="nnls_solving.html#_CPPv4N5ceres6Solver7Options14minimizer_typeE" title="Permalink to this definition">¶</a><br></dt>
 <dd><p>Default: <code class="docutils literal notranslate"><span class="pre">TRUST_REGION</span></code></p>
 <p>Choose between <code class="docutils literal notranslate"><span class="pre">LINE_SEARCH</span></code> and <code class="docutils literal notranslate"><span class="pre">TRUST_REGION</span></code> algorithms. See
-<a class="reference internal" href="nnls_solving.html#section-trust-region-methods"><span class="std std-ref">Trust Region Methods</span></a> and
-<a class="reference internal" href="nnls_solving.html#section-line-search-methods"><span class="std std-ref">Line Search Methods</span></a> for more details.</p>
+<a class="reference internal" href="nnls_solving.html#section-trust-region-methods"><span class="std std-ref">信赖域方法</span></a> and
+<a class="reference internal" href="nnls_solving.html#section-line-search-methods"><span class="std std-ref">线搜索方法</span></a> for more details.</p>
 </dd></dl>
 
 <dl class="cpp member">
@@ -2843,7 +2843,7 @@ otherwise.</p>
 is the block Jacobi preconditioner. Valid values are (in increasing
 order of complexity) <code class="docutils literal notranslate"><span class="pre">IDENTITY</span></code>, <code class="docutils literal notranslate"><span class="pre">JACOBI</span></code>, <code class="docutils literal notranslate"><span class="pre">SCHUR_JACOBI</span></code>,
 <code class="docutils literal notranslate"><span class="pre">CLUSTER_JACOBI</span></code> and <code class="docutils literal notranslate"><span class="pre">CLUSTER_TRIDIAGONAL</span></code>. See
-<a class="reference internal" href="nnls_solving.html#section-preconditioner"><span class="std std-ref">Preconditioner</span></a> for more details.</p>
+<a class="reference internal" href="nnls_solving.html#section-preconditioner"><span class="std std-ref">预调节器</span></a> for more details.</p>
 </dd></dl>
 
 <dl class="cpp member">
@@ -2946,7 +2946,7 @@ desired order in which parameter blocks should be eliminated by the
 linear solvers.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">NULL</span></code>, the solver is free to choose an ordering that it
 thinks is best.</p>
-<p>See <a class="reference internal" href="nnls_solving.html#section-ordering"><span class="std std-ref">Ordering</span></a> for more details.</p>
+<p>See <a class="reference internal" href="nnls_solving.html#section-ordering"><span class="std std-ref">排序</span></a> for more details.</p>
 </dd></dl>
 
 <dl class="cpp member">
@@ -3127,7 +3127,7 @@ during the inner optimization phase. Each group must be an
 independent set. Not all parameter blocks need to be included in
 the ordering.</p></li>
 </ol>
-<p>See <a class="reference internal" href="nnls_solving.html#section-ordering"><span class="std std-ref">Ordering</span></a> for more details.</p>
+<p>See <a class="reference internal" href="nnls_solving.html#section-ordering"><span class="std std-ref">排序</span></a> for more details.</p>
 </dd></dl>
 
 <dl class="cpp member">
@@ -4137,8 +4137,8 @@ indicates the rank of the Hessian approximation.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="nnls_modeling.html" class="btn btn-neutral float-left" title="Modeling Non-linear Least Squares" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="nnls_covariance.html" class="btn btn-neutral float-right" title="Covariance Estimation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nnls_modeling.html" class="btn btn-neutral float-left" title="非线性最小二乘的建模" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nnls_covariance.html" class="btn btn-neutral float-right" title="协方差估计" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr>
