@@ -3805,13 +3805,14 @@ parameterization can now be constructed as</p>
 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
 是一样的，有关API中受此更改影响的方法，请参阅下面的文档。</p>
 </div>
-<p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a> holds the robustified bounds constrained
-non-linear least squares problem <a class="reference internal" href="nnls_modeling.html#equation-ceresproblem-modeling">(1)</a>. To
-create a least squares problem, use the
-<code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddResidalBlock()</span></code> and
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a> methods.</p>
-<p>For example a problem containing 3 parameter blocks of sizes 3, 4
-and 5 respectively and two residual blocks of size 2 and 6:</p>
+<p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a> 
+保存鲁棒化约束的非线性最小二乘问题 <a class="reference internal" href="nnls_modeling.html#equation-ceresproblem-modeling">(1)</a>
+。为了创建一个最小二乘问题，使用
+<code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddResidalBlock()</span></code>
+ 和
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a> 
+方法。</p>
+<p>举例说明，一个问题包含3个参数块，大小分别为3、4、5，两个残差块，大小分别为2和6：</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="n">x1</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
 <span class="kt">double</span><span class="w"> </span><span class="n">x2</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
 <span class="kt">double</span><span class="w"> </span><span class="n">x3</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="mf">7.0</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
@@ -3821,82 +3822,71 @@ and 5 respectively and two residual blocks of size 2 and 6:</p>
 <span class="n">problem</span><span class="p">.</span><span class="n">AddResidualBlock</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">MyBinaryCostFunction</span><span class="p">(...),</span><span class="w"> </span><span class="n">x2</span><span class="p">,</span><span class="w"> </span><span class="n">x3</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
-<p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem16AddResidualBlockEP12CostFunctionP12LossFunctionK6vectorIPdE" title="ceres::Problem::AddResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddResidualBlock()</span></code></a> as the name implies, adds a
-residual block to the problem. It adds a <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunctionE" title="ceres::CostFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a>, an
-optional <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12LossFunctionE" title="ceres::LossFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LossFunction</span></code></a> and connects the
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunctionE" title="ceres::CostFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a> to a set of parameter block.</p>
-<p>The cost function carries with it information about the sizes of
-the parameter blocks it expects. The function checks that these
-match the sizes of the parameter blocks listed in
-<code class="docutils literal notranslate"><span class="pre">parameter_blocks</span></code>. The program aborts if a mismatch is
-detected. <code class="docutils literal notranslate"><span class="pre">loss_function</span></code> can be <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>, in which case the cost
-of the term is just the squared norm of the residuals.</p>
-<p>The user has the option of explicitly adding the parameter blocks
-using <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a>. This causes additional
-correctness checking; however, <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem16AddResidualBlockEP12CostFunctionP12LossFunctionK6vectorIPdE" title="ceres::Problem::AddResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddResidualBlock()</span></code></a>
-implicitly adds the parameter blocks if they are not present, so
-calling <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a> explicitly is not
-required.</p>
-<p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a> explicitly adds a parameter
-block to the <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>. Optionally it allows the user to
-associate a <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> object with the parameter block
-too. Repeated calls with the same arguments are ignored. Repeated
-calls with the same double pointer but a different size results in
-undefined behavior.</p>
-<p>You can set any parameter block to be constant using
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem25SetParameterBlockConstantEPKd" title="ceres::Problem::SetParameterBlockConstant"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::SetParameterBlockConstant()</span></code></a> and undo this using
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem25SetParameterBlockVariableEPd" title="ceres::Problem::SetParameterBlockVariable"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">SetParameterBlockVariable()</span></code></a>.</p>
-<p>In fact you can set any number of parameter blocks to be constant,
-and Ceres is smart enough to figure out what part of the problem
-you have constructed depends on the parameter blocks that are free
-to change and only spends time solving it. So for example if you
-constructed a problem with a million parameter blocks and 2 million
-residual blocks, but then set all but one parameter blocks to be
-constant and say only 10 residual blocks depend on this one
-non-constant parameter block. Then the computational effort Ceres
-spends in solving this problem will be the same if you had defined
-a problem with one parameter block and 10 residual blocks.</p>
-<p><strong>Ownership</strong></p>
-<p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a> by default takes ownership of the
-<code class="docutils literal notranslate"><span class="pre">cost_function</span></code>, <code class="docutils literal notranslate"><span class="pre">loss_function</span></code>, <code class="docutils literal notranslate"><span class="pre">local_parameterization</span></code>,
-and <code class="docutils literal notranslate"><span class="pre">manifold</span></code> pointers. These objects remain live for the life
-of the <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>. If the user wishes to keep control over
-the destruction of these objects, then they can do this by setting
-the corresponding enums in the <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem::Options</span></code></a> struct.</p>
-<p>Note that even though the Problem takes ownership of objects,
-<code class="docutils literal notranslate"><span class="pre">cost_function</span></code> and <code class="docutils literal notranslate"><span class="pre">loss_function</span></code>, it does not preclude the
-user from re-using them in another residual block. Similarly the
-same <code class="docutils literal notranslate"><span class="pre">local_parameterization</span></code> or <code class="docutils literal notranslate"><span class="pre">manifold</span></code> object can be used
-with multiple parameter blocks. The destructor takes care to call
-delete on each owned object exactly once.</p>
+<p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem16AddResidualBlockEP12CostFunctionP12LossFunctionK6vectorIPdE" title="ceres::Problem::AddResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddResidualBlock()</span></code></a> 
+顾名思义，就是向问题中添加一个残差块。它添加一个 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunctionE" title="ceres::CostFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a>
+，一个可选的 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12LossFunctionE" title="ceres::LossFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LossFunction</span></code></a> 
+并且将 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunctionE" title="ceres::CostFunction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a> 与一系列参数块联系起来。</p>
+<p>代价函数 cost function 携带了它所期望的参数块大小的信息。这一函数检查这些参数是否与
+<code class="docutils literal notranslate"><span class="pre">parameter_blocks</span></code>
+中列出的参数块的大小匹配。如果检查到不匹配，程序将终止。<code class="docutils literal notranslate"><span class="pre">loss_function</span></code> 
+可以是 <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>
+，表示项的代价就是残差的范数范数。</p>
+
+<p>用户可以选择使用 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a>
+显式地添加参数块。这将导致额外的正确性检查；但是，如果参数块不存在，<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem16AddResidualBlockEP12CostFunctionP12LossFunctionK6vectorIPdE" title="ceres::Problem::AddResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddResidualBlock()</span></code></a>
+会隐式地添加参数块，因此不需要显式地调用 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a> 。</p>
+
+<p><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="ceres::Problem::AddParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::AddParameterBlock()</span></code></a> 显式地向 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>
+添加一个参数块。它还允许用户将一个 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> 
+对象与参数块关联起来。带有相同参数的重复调用将被忽略。重复使用相同的双指针但是大小不同的调用调用将导致未定义的行为。</p>
+
+<p>你可以通过 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem25SetParameterBlockConstantEPKd" title="ceres::Problem::SetParameterBlockConstant"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::SetParameterBlockConstant()</span></code></a> 
+将任何参数块设置为常量，并且可以使用
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem25SetParameterBlockVariableEPd" title="ceres::Problem::SetParameterBlockVariable"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">SetParameterBlockVariable()</span></code></a>
+取消此设置。</p>
+
+<p>事实上，您可以将任意数量的参数块设置为常数，Ceres足够智能，它能够发现
+您所构建的问题的哪个部分取决于可以自由更改的参数块，解决它只是时间问题。
+举个例子，如果你构造一个有一百万个参数块和两百万个残差块的问题，但是设置
+除了一个参数块以外的所有参数块为常量，并且说只有10个残差块依赖于这个非常量
+参数块。那么，如果你定义了一个只有一个参数块和10个剩余块的问题，Ceres在
+解决这个问题上所花的计算精力将是相同的。</p>
+
+<p><strong>所有权 Ownership</strong></p>
+<p>默认情况下，<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a> 
+拥有着<code class="docutils literal notranslate"><span class="pre">cost_function</span></code>, <code class="docutils literal notranslate"><span class="pre">loss_function</span></code>， <code class="docutils literal notranslate"><span class="pre">local_parameterization</span></code>，
+和 <code class="docutils literal notranslate"><span class="pre">manifold</span></code> 
+指针的所有权。这些对象在 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>
+存续期间仍然存在。如果用户希望控制这些对象的销毁，那么它们可以通过在 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem::Options</span></code></a> 
+结构体中设置相应的枚举来实现。</p>
+
+<p>注意，即使 Problem 拥有 <code class="docutils literal notranslate"><span class="pre">cost_function</span></code> 和 <code class="docutils literal notranslate"><span class="pre">loss_function</span></code> 
+等对象的所有权，也不排除用户在另一个残差块中重用它们。类似的，相同的 <code class="docutils literal notranslate"><span class="pre">local_parameterization</span></code> 或 <code class="docutils literal notranslate"><span class="pre">manifold</span></code> 
+对象可以用于多个参数块。析构函数注意对每个拥有的对象只调用一次 delete 。</p>
 </dd></dl>
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7OptionsE">
 <span id="_CPPv3N5ceres7Problem7OptionsE"></span><span id="_CPPv2N5ceres7Problem7OptionsE"></span><span id="ceres::Problem::Options"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Options</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Options struct that is used to control <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>.</p>
+<dd><p>用于控制 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Problem</span></code></a>的选项的结构体。</p>
 </dd></dl>
 
 <dl class="cpp member">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7Options23cost_function_ownershipE">
 <span id="_CPPv3N5ceres7Problem7Options23cost_function_ownershipE"></span><span id="_CPPv2N5ceres7Problem7Options23cost_function_ownershipE"></span><span id="ceres::Problem::Options::cost_function_ownership__Ownership"></span><span class="n"><span class="pre">Ownership</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">cost_function_ownership</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options23cost_function_ownershipE" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code></p>
-<p>This option controls whether the Problem object owns the cost
-functions.</p>
-<p>If set to <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code>, then the problem object will delete the
-cost functions on destruction. The destructor is careful to delete
-the pointers only once, since sharing cost functions is allowed.</p>
+<dd><p>默认: <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code></p>
+<p>此选项控制了 Problem 对象是否拥有代价函数。</p>
+<p>如果设置为 <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code>
+，那么 problem 对象将在析构时删除代价函数。析构函数谨慎地只删除指针一次，因为允许共享代价函数。</p>
 </dd></dl>
 
 <dl class="cpp member">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7Options23loss_function_ownershipE">
 <span id="_CPPv3N5ceres7Problem7Options23loss_function_ownershipE"></span><span id="_CPPv2N5ceres7Problem7Options23loss_function_ownershipE"></span><span id="ceres::Problem::Options::loss_function_ownership__Ownership"></span><span class="n"><span class="pre">Ownership</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">loss_function_ownership</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options23loss_function_ownershipE" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code></p>
-<p>This option controls whether the Problem object owns the loss
-functions.</p>
-<p>If set to <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code>, then the problem object will delete the
-loss functions on destruction. The destructor is careful to delete
-the pointers only once, since sharing loss functions is allowed.</p>
+<dd><p>默认: <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code></p>
+<p>此选项控制了 Problem 对象是否拥有损失函数。</p>
+<p>如果设置为 <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code>
+，那么 problem 对象将在析构时删除损失函数。析构函数谨慎地只删除指针一次，因为允许共享损失函数。</p>
 </dd></dl>
 
 <dl class="cpp member">
@@ -3904,14 +3894,12 @@ the pointers only once, since sharing loss functions is allowed.</p>
 <span id="_CPPv3N5ceres7Problem7Options32local_parameterization_ownershipE"></span><span id="_CPPv2N5ceres7Problem7Options32local_parameterization_ownershipE"></span><span id="ceres::Problem::Options::local_parameterization_ownership__Ownership"></span><span class="n"><span class="pre">Ownership</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">local_parameterization_ownership</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options32local_parameterization_ownershipE" title="Permalink to this definition">¶</a><br></dt>
 <dd><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><cite>Problem::Options::local_parameterization_ownership</cite> is
-deprecated. It will be removed in Ceres Solver version
-2.2.0. Please move to using Manifolds and use
-<cite>Problem::Options::manifold_ownership</cite> instead.</p>
+<p><cite>Problem::Options::local_parameterization_ownership</cite> 
+已经被弃用。它将在 Ceres Solver 2.2.0 版本中被移除。请转到使用 Manifolds 并使用
+<cite>Problem::Options::manifold_ownership</cite> 。</p>
 </div>
-<p>Default: <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code></p>
-<p>This option controls whether the Problem object owns the local
-parameterizations.</p>
+<p>默认： <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code></p>
+<p>此选项控制 Probem 对象是否拥有局部参数化。</p>
 <p>If set to <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code>, then the problem object will delete the
 local parameterizations on destruction. The destructor is careful
 to delete the pointers only once, since sharing local
@@ -3922,7 +3910,7 @@ parameterizations is allowed.</p>
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7Options18manifold_ownershipE">
 <span id="_CPPv3N5ceres7Problem7Options18manifold_ownershipE"></span><span id="_CPPv2N5ceres7Problem7Options18manifold_ownershipE"></span><span id="ceres::Problem::Options::manifold_ownership__Ownership"></span><span class="n"><span class="pre">Ownership</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">manifold_ownership</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options18manifold_ownershipE" title="Permalink to this definition">¶</a><br></dt>
 <dd><p>Default: <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code></p>
-<p>This option controls whether the Problem object owns the manifolds.</p>
+<p>此选项控制 Problem 对象是否具有 manifolds。</p>
 <p>If set to <code class="docutils literal notranslate"><span class="pre">TAKE_OWNERSHIP</span></code>, then the problem object will delete the
 manifolds on destruction. The destructor is careful to delete the
 pointers only once, since sharing manifolds is allowed.</p>
@@ -3932,35 +3920,29 @@ pointers only once, since sharing manifolds is allowed.</p>
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7Options19enable_fast_removalE">
 <span id="_CPPv3N5ceres7Problem7Options19enable_fast_removalE"></span><span id="_CPPv2N5ceres7Problem7Options19enable_fast_removalE"></span><span id="ceres::Problem::Options::enable_fast_removal__b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">enable_fast_removal</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options19enable_fast_removalE" title="Permalink to this definition">¶</a><br></dt>
 <dd><p>Default: <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-<p>If true, trades memory for faster
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem19RemoveResidualBlockE15ResidualBlockId" title="ceres::Problem::RemoveResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveResidualBlock()</span></code></a> and
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem20RemoveParameterBlockEPKd" title="ceres::Problem::RemoveParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveParameterBlock()</span></code></a> operations.</p>
-<p>By default, <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem20RemoveParameterBlockEPKd" title="ceres::Problem::RemoveParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveParameterBlock()</span></code></a> and
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem19RemoveResidualBlockE15ResidualBlockId" title="ceres::Problem::RemoveResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveResidualBlock()</span></code></a> take time proportional to
-the size of the entire problem.  If you only ever remove
-parameters or residuals from the problem occasionally, this might
-be acceptable.  However, if you have memory to spare, enable this
-option to make <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem20RemoveParameterBlockEPKd" title="ceres::Problem::RemoveParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveParameterBlock()</span></code></a> take time
-proportional to the number of residual blocks that depend on it,
-and <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem19RemoveResidualBlockE15ResidualBlockId" title="ceres::Problem::RemoveResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveResidualBlock()</span></code></a> take (on average)
-constant time.</p>
-<p>The increase in memory usage is twofold: an additional hash set
-per parameter block containing all the residuals that depend on
-the parameter block; and a hash set in the problem containing all
-residuals.</p>
+<p>如果是则为更快的
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem19RemoveResidualBlockE15ResidualBlockId" title="ceres::Problem::RemoveResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveResidualBlock()</span></code></a> 和
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem20RemoveParameterBlockEPKd" title="ceres::Problem::RemoveParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveParameterBlock()</span></code></a>  操作交换内存。</p>
+<p>默认情况下， <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem20RemoveParameterBlockEPKd" title="ceres::Problem::RemoveParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveParameterBlock()</span></code></a> 和
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem19RemoveResidualBlockE15ResidualBlockId" title="ceres::Problem::RemoveResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveResidualBlock()</span></code></a> 
+花费的时间与整个问题的大小成正比。如果您只是偶尔从问题中移除参数或残差，
+这可能是可以接受的。但是，如果有空闲内存，可以启用此选项，使 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem20RemoveParameterBlockEPKd" title="ceres::Problem::RemoveParameterBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveParameterBlock()</span></code></a> 
+所花费的时间与依赖于它的残差块数量成正比，而 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem19RemoveResidualBlockE15ResidualBlockId" title="ceres::Problem::RemoveResidualBlock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::RemoveResidualBlock()</span></code></a> 
+所花费的时间（平均）为常数。</p>
+
+<p>内存使用的增加是双重的:
+每个参数块所包含的一个额外的哈希集合，包含所有依赖于该参数块的残差;
+一个包含所有残差的哈希集合。</p>
 </dd></dl>
 
 <dl class="cpp member">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7Options25disable_all_safety_checksE">
 <span id="_CPPv3N5ceres7Problem7Options25disable_all_safety_checksE"></span><span id="_CPPv2N5ceres7Problem7Options25disable_all_safety_checksE"></span><span id="ceres::Problem::Options::disable_all_safety_checks__b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">disable_all_safety_checks</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options25disable_all_safety_checksE" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Default: <cite>false</cite></p>
-<p>By default, Ceres performs a variety of safety checks when
-constructing the problem. There is a small but measurable
-performance penalty to these checks, typically around 5% of
-construction time. If you are sure your problem construction is
-correct, and 5% of the problem construction time is truly an
-overhead you want to avoid, then you can set
-disable_all_safety_checks to true.</p>
+<dd><p>默认： <cite>false</cite></p>
+<p>默认情况下，Ceres在构造问题时执行各种安全检查。这些检查有一个较小但可测量的性能损失，
+通常约占构建时间的5%。如果您确信您的问题构造是正确的，并且问题构造时间的5%确实是您希望
+避免的开销，那么您可以将disable_all_safety_checks设置为true。</p>
+
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Do not set this to true, unless you are absolutely sure of what you are
@@ -3971,11 +3953,11 @@ doing.</p>
 <dl class="cpp member">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7Options7contextE">
 <span id="_CPPv3N5ceres7Problem7Options7contextE"></span><span id="_CPPv2N5ceres7Problem7Options7contextE"></span><span id="ceres::Problem::Options::context__ContextP"></span><span class="n"><span class="pre">Context</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">context</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options7contextE" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Default: <code class="docutils literal notranslate"><span class="pre">nullptr</span></code></p>
-<p>A Ceres global context to use for solving this problem. This may
-help to reduce computation time as Ceres can reuse expensive
-objects to create.  The context object can be <cite>nullptr</cite>, in which
-case Ceres may create one.</p>
+<dd><p>默认： <code class="docutils literal notranslate"><span class="pre">nullptr</span></code></p>
+<p>一个 Ceres 全局 context 来解决这个问题。这可能有助于减少计算时间，
+因为Ceres可以重用昂贵的对象来创建。context 对象可以是 <cite>nullptr</cite>，
+在这种情况下，Ceres可以创建一个。</p>
+
 <p>Ceres does NOT take ownership of the pointer.</p>
 </dd></dl>
 
@@ -3983,8 +3965,8 @@ case Ceres may create one.</p>
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem7Options19evaluation_callbackE">
 <span id="_CPPv3N5ceres7Problem7Options19evaluation_callbackE"></span><span id="_CPPv2N5ceres7Problem7Options19evaluation_callbackE"></span><span id="ceres::Problem::Options::evaluation_callback__EvaluationCallbackP"></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres18EvaluationCallbackE" title="ceres::EvaluationCallback"><span class="n"><span class="pre">EvaluationCallback</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7Problem7OptionsE" title="ceres::Problem::Options"><span class="n"><span class="pre">Options</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">evaluation_callback</span></span></span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem7Options19evaluation_callbackE" title="Permalink to this definition">¶</a><br></dt>
 <dd><p>Default: <code class="docutils literal notranslate"><span class="pre">nullptr</span></code></p>
-<p>Using this callback interface, Ceres will notify you when it is
-about to evaluate the residuals or Jacobians.</p>
+<p>使用这个回调接口，Ceres 将在将要计算残差或雅可比矩阵时通知您。</p>
+
 <p>If an <code class="docutils literal notranslate"><span class="pre">evaluation_callback</span></code> is present, Ceres will update the
 user’s parameter blocks to the values that will be used when
 calling <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunction8EvaluateEPPCKdPdPPd" title="ceres::CostFunction::Evaluate"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">CostFunction::Evaluate()</span></code></a> before calling
@@ -4012,25 +3994,19 @@ error.</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4I_Dp2TsEN5ceres7Problem16AddResidualBlockE15ResidualBlockIdP12CostFunctionP12LossFunctionPdDp2Ts">
 <span id="_CPPv3I_Dp2TsEN5ceres7Problem16AddResidualBlockEP12CostFunctionP12LossFunctionPdDp2Ts"></span><span id="_CPPv2I_Dp2TsEN5ceres7Problem16AddResidualBlockEP12CostFunctionP12LossFunctionPdDp2Ts"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="n"><span class="pre">Ts</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">&gt;</span></span><br><span class="n"><span class="pre">ResidualBlockId</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">AddResidualBlock</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12CostFunctionE" title="ceres::CostFunction"><span class="n"><span class="pre">CostFunction</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cost_function</span></span>, <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres12LossFunctionE" title="ceres::LossFunction"><span class="n"><span class="pre">LossFunction</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">loss_function</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">x0</span></span>, <span class="n"><span class="pre">Ts</span></span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">xs</span></span><span class="sig-paren">)</span><a class="headerlink" href="nnls_modeling.html#_CPPv4I_Dp2TsEN5ceres7Problem16AddResidualBlockE15ResidualBlockIdP12CostFunctionP12LossFunctionPdDp2Ts" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Add a residual block to the overall cost function. The cost
-function carries with it information about the sizes of the
-parameter blocks it expects. The function checks that these match
-the sizes of the parameter blocks listed in parameter_blocks. The
-program aborts if a mismatch is detected. loss_function can be
-<code class="docutils literal notranslate"><span class="pre">nullptr</span></code>, in which case the cost of the term is just the squared
-norm of the residuals.</p>
-<p>The parameter blocks may be passed together as a
-<code class="docutils literal notranslate"><span class="pre">vector&lt;double*&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">double*</span></code> pointers.</p>
-<p>The user has the option of explicitly adding the parameter blocks
-using AddParameterBlock. This causes additional correctness
-checking; however, AddResidualBlock implicitly adds the parameter
-blocks if they are not present, so calling AddParameterBlock
-explicitly is not required.</p>
-<p>The Problem object by default takes ownership of the
-cost_function and loss_function pointers. These objects remain
-live for the life of the Problem object. If the user wishes to
-keep control over the destruction of these objects, then they can
-do this by setting the corresponding enums in the Options struct.</p>
+<dd><p>在总代价函数中添加一个残差块。代价函数携带了它所期望的参数块大小的信息。
+函数检查这些参数是否与parameter_blocks中列出的参数块的大小匹配。如果检测到不匹配，
+程序将终止。Loss_function可以是<code class="docutils literal notranslate"><span class="pre">nullptr</span></code>
+，在这种情况下，项的代价就是残差的范数平方。</p>
+
+<p>参数块可以以<code class="docutils literal notranslate"><span class="pre">vector&lt;double*&gt;</span></code>或者 <code class="docutils literal notranslate"><span class="pre">double*</span></code> 指针的形式被一起传递。</p>
+<p>用户可以选择使用AddParameterBlock显式地添加参数块。这将导致额外的正确性检查;
+但是，如果参数块不存在，addressidualblock会隐式地添加参数块，因此不需要显式地调用AddParameterBlock。</p>
+
+<p>Problem对象默认拥有cost_function和loss_function的指针的所有权。
+这些对象在Problem对象的生命周期内仍然存在。如果用户希望控制这些对象的销毁，
+那么他们可以通过在Options结构体中设置相应的枚举来实现这一点。</p>
+
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Even though the Problem takes ownership of <code class="docutils literal notranslate"><span class="pre">cost_function</span></code>
@@ -4064,28 +4040,28 @@ regardless of how many residual blocks refer to them.</p>
 <span id="_CPPv3N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization"></span><span id="_CPPv2N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization"></span><span id="ceres::Problem::AddParameterBlock__doubleP.i.LocalParameterizationP"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">AddParameterBlock</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">values</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><span class="n"><span class="pre">LocalParameterization</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">local_parameterization</span></span><span class="sig-paren">)</span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdiP21LocalParameterization" title="Permalink to this definition">¶</a><br></dt>
 <dd><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This method is deprecated and will be removed in Ceres Solver
-version 2.2.0. Please move to using the <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> based version
-of <cite>AddParameterBlock</cite>.</p>
-<p>During the transition from <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> to
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>, internally the
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> is treated as a
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> by wrapping it using a <cite>ManifoldAdapter</cite>
-object. So <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::HasManifold()</span></code> will return true,
-<code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::GetManifold()</span></code> will return the wrapped object and
-<a class="reference internal" href="nnls_modeling.html#_CPPv4NK5ceres7Problem25ParameterBlockTangentSizeEPKd" title="ceres::Problem::ParameterBlockTangentSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::ParameterBlockTangentSize()</span></code></a> will return the value of
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterization9LocalSizeEv" title="ceres::LocalParameterization::LocalSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">LocalParameterization::LocalSize()</span></code></a>.</p>
+<p>这种方法已经被弃用了并且将从 Ceres Solver 2.2.0 版本中移除。请转用基于
+ <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a> 的 <cite>AddParameterBlock</cite> 版本。</p>
+<p>在从 
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> 
+转换到 
+<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
+的过程中，在内部，通过使用一个 <cite>ManifoldAdapter</cite>
+对象将 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a>
+包装成一个 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
+。因此 <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::HasManifold()</span></code> 
+将返回true，<code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::GetManifold()</span></code> 
+将返回包装好的对象，<a class="reference internal" href="nnls_modeling.html#_CPPv4NK5ceres7Problem25ParameterBlockTangentSizeEPKd" title="ceres::Problem::ParameterBlockTangentSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">Problem::ParameterBlockTangentSize()</span></code></a> 
+将返回<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterization9LocalSizeEv" title="ceres::LocalParameterization::LocalSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">LocalParameterization::LocalSize()</span></code></a>
+的值。</p>
 </div>
-<p>Add a parameter block with appropriate size and parameterization to the
-problem. It is okay for <code class="docutils literal notranslate"><span class="pre">local_parameterization</span></code> to be <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>.</p>
-<p>Repeated calls with the same arguments are ignored. Repeated calls
-with the same double pointer but a different size results in a crash
-(unless <code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">Solver::Options::diable_all_safety_checks</span></code> is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>).</p>
-<p>Repeated calls with the same double pointer and size but different
-<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> is equivalent to calling
-<cite>SetParameterization(local_parameterization)</cite>, i.e., any previously
-associated <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> or <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
-object will be replaced with the <cite>local_parameterization</cite>.</p>
+<p>为问题添加适合 size 和 parameterization 的参数块。<code class="docutils literal notranslate"><span class="pre">local_parameterization</span></code> 为 <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>
+是可以的。</p>
+<p>带有相同参数的重复调用会被忽略。使用相同双指针但是大小不同的重复调用会导致崩溃（除非 <code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">Solver::Options::diable_all_safety_checks</span></code> 被设置为 <code class="docutils literal notranslate"><span class="pre">true</span></code>）。</p>
+<p>使用相同双指针和大小但是<a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> 
+不同的重复调用等同于调用 <cite>SetParameterization(local_parameterization)</cite>
+也就是说，任何先前关联的 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres21LocalParameterizationE" title="ceres::LocalParameterization"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LocalParameterization</span></code></a> 或 <a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres8ManifoldE" title="ceres::Manifold"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>
+对象都会被 <cite>local_parameterization</cite>替换。</p>
 </dd></dl>
 
 <dl class="cpp function">
@@ -4115,10 +4091,8 @@ i.e., any previously associated <a class="reference internal" href="nnls_modelin
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem17AddParameterBlockEPdi">
 <span id="_CPPv3N5ceres7Problem17AddParameterBlockEPdi"></span><span id="_CPPv2N5ceres7Problem17AddParameterBlockEPdi"></span><span id="ceres::Problem::AddParameterBlock__doubleP.i"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">AddParameterBlock</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">values</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem17AddParameterBlockEPdi" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Add a parameter block with appropriate size and parameterization to
-the problem. Repeated calls with the same arguments are
-ignored. Repeated calls with the same double pointer but a
-different size results in undefined behavior.</p>
+<dd><p>为 problem 添加适当 size 和 parameterization 的参数块。带有相同参数的重复调用将被忽略。
+使用相同的双指针但大小不同的重复调用将导致未定义的行为。</p>
 </dd></dl>
 
 <dl class="cpp function">
@@ -4168,7 +4142,7 @@ remove! This may change in a future release.</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5ceres7Problem25SetParameterBlockConstantEPKd">
 <span id="_CPPv3N5ceres7Problem25SetParameterBlockConstantEPKd"></span><span id="_CPPv2N5ceres7Problem25SetParameterBlockConstantEPKd"></span><span id="ceres::Problem::SetParameterBlockConstant__doubleCP"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="nnls_modeling.html#_CPPv4N5ceres7ProblemE" title="ceres::Problem"><span class="n"><span class="pre">Problem</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">SetParameterBlockConstant</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">values</span></span><span class="sig-paren">)</span><a class="headerlink" href="nnls_modeling.html#_CPPv4N5ceres7Problem25SetParameterBlockConstantEPKd" title="Permalink to this definition">¶</a><br></dt>
-<dd><p>Hold the indicated parameter block constant during optimization.</p>
+<dd><p>在优化的过程中保持指定的参数块不变。</p>
 </dd></dl>
 
 <dl class="cpp function">
